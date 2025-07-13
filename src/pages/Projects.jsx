@@ -4,7 +4,7 @@ import { FaGithub, FaExternalLinkAlt } from "react-icons/fa";
 
 const projects = [
   {
-    image: "/public/eCommerce.png",
+    image: "https://i.ibb.co/wFWm3MXF/e-Commerce.png",
     title: "E-Commerce App",
     description:
       "This is a modern, full-featured e-commerce web application built with React. It includes separate interfaces for customers and administrators, providing a complete solution for online retail.",
@@ -15,7 +15,7 @@ const projects = [
 
   {
     title: "show cart",
-    image: "/public/cart.png",
+    image: "https://i.ibb.co/m53jyffS/cart.png",
     description:
       "simple full functional cart and show products built with react.",
     tech: ["React.js", "Tailwind CSS", "redux-toolkit"],
@@ -25,7 +25,7 @@ const projects = [
 
   {
     title: "Store Management System",
-    image: "/public/c.png",
+    image: "https://i.ibb.co/wrZTJ9q7/c.png",
     description:
       "This project is a C# Windows Forms application for managing a store's database. It provides a graphical user interface to interact with products, customers, and orders data stored in a SQL Server database.",
     tech: ["C#", "Windows form", ".NET framework", "SQL Server"],
@@ -34,7 +34,7 @@ const projects = [
   },
   {
     title: "Weather App",
-    image: "/public/wheiter.png",
+    image: "https://i.ibb.co/zW72cKZc/wheiter.png",
     description:
       "A responsive weather application built with vanilla JavaScript that fetches real-time weather data using the OpenWeatherMap API. The app displays temperature, city name, weather conditions, and dynamic icons based on live data. Clean design and user-friendly interface tailored for quick weather checks.",
     tech: ["JavaScript", "REST API", "HTML", "CSS", "OpenWeatherMap"],
@@ -43,7 +43,7 @@ const projects = [
   },
   {
     title: "currency_converter",
-    image: "/public/currency.png",
+    image: "https://i.ibb.co/2YKkd0Zc/currency.png",
     description:
       "A lightweight currency converter built with vanilla JavaScript, allowing users to convert between different currencies using live exchange rates from a public API. The app features real-time calculations, input validation, and a simple responsive layout for seamless use across devices.",
 
@@ -53,7 +53,7 @@ const projects = [
   },
   {
     title: "memes",
-    image: "/public/mem.png",
+    image: "https://i.ibb.co/1G4fzm1P/mem.png",
     description:
       "A lightweight currency converter built with vanilla JavaScript, allowing users to convert between different currencies using live exchange rates from a public API. The app features real-time calculations, input validation, and a simple responsive layout for seamless use across devices.",
 
@@ -63,7 +63,7 @@ const projects = [
   },
   {
     title: "Portfolio Website",
-    image: "/public/portfileo.png",
+    image: "https://i.ibb.co/7xLnPfHw/portfileo.png",
     description:
       "A personal portfolio built with React, Tailwind CSS, and Framer Motion animations.",
     tech: ["React", "Tailwind CSS", "Framer Motion"],
@@ -71,7 +71,6 @@ const projects = [
     github: "https://github.com/BelalWaheed/portfolio",
   },
 ];
-
 export default function Projects() {
   return (
     <section className="min-h-[calc(100vh-68px)] bg-gradient-to-br from-[#0f172a] to-[#0e111a] text-white px-6 py-20">
