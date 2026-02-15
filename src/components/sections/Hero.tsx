@@ -121,6 +121,11 @@ export function Hero() {
               <Button variant="outline" size="lg" onClick={() => document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })}>
                 Get In Touch
               </Button>
+              <Button variant="outline" size="lg" asChild>
+                <a href="/resume">
+                  Resume
+                </a>
+              </Button>
             </motion.div>
 
             {/* Stats */}
