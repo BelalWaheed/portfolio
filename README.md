@@ -1,58 +1,39 @@
-# 💼 Belal Waheed — Portfolio
+# Belal Waheed — Portfolio
 
-A modern, animated developer portfolio built with **React**, **Tailwind CSS**, **Framer Motion**, and **Material Tailwind**. Includes a fully working contact form using **Formspree**, smooth scroll-based animations, and responsive design.
+A modern, responsive portfolio website showcasing my projects, skills, and experience as a Frontend Developer.
 
-## 🚀 Features
+**[🌐 Live Demo](https://belal-waheed.vercel.app)** · **[📧 Contact](mailto:belalwaheed000@gmail.com)**
 
-- ⚡ Animated sections on scroll (Framer Motion)
-- 💬 Contact form powered by Formspree with toast notifications
-- 🎨 Tailwind CSS custom themes and shadows
-- 🌙 Dark-themed gradient layout
-- 📱 Fully responsive on all screen sizes
-- 🔗 Social media links and footer
+---
 
-## 🛠️ Built With
+## ✨ Features
 
-- [React](https://reactjs.org/)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [Material Tailwind](https://www.material-tailwind.com/)
-- [Framer Motion](https://www.framer.com/motion/)
-- [Formspree](https://formspree.io/)
-- [React Icons](https://react-icons.github.io/react-icons/)
-- [React Router](https://reactrouter.com/)
+- **Scroll-triggered animations** powered by Framer Motion
+- **Earthy green dark theme** with custom design system
+- **Fully responsive** — optimized for all screen sizes
+- **Accessible UI** components built with Radix UI
+- **Blazing fast** — React 19 + Vite + React Compiler
 
-## 📂 Project Structure
+## 🛠 Tech Stack
 
-```
+| Category          | Technologies                             |
+| ----------------- | ---------------------------------------- |
+| **Framework**     | React 19, TypeScript                     |
+| **Styling**       | Tailwind CSS 4, class-variance-authority |
+| **Animation**     | Framer Motion                            |
+| **UI Primitives** | Radix UI (Tooltip, Slot)                 |
+| **Icons**         | Lucide React                             |
+| **Routing**       | React Router                             |
+| **Build**         | Vite, React Compiler (Babel)             |
 
-src/
-├── components/
-│   └── Footer.jsx
-│   └── Contact.jsx
-│   └── Home.jsx
-├── App.jsx
-├── main.jsx
-├── index.css
-└── ...
+## 🚀 Getting Started
 
-```
+### Prerequisites
 
-## 📧 Setting up Formspree
+- [Node.js](https://nodejs.org/) (v18+)
+- npm
 
-1. Go to [https://formspree.io](https://formspree.io)
-2. Create a form and copy the form ID (like `hola`)
-3. In your component:
-   ```js
-   const [state, handleSubmit] = useForm("hola");
-   ```
-
-````
-
-4. Done! Messages are now sent directly to your inbox.
-
-> ✅ Tip: To reuse the form in the future, just paste the same form ID into any component.
-
-## 🔧 Setup
+### Installation
 
 ```bash
 # Clone the repo
@@ -62,14 +43,43 @@ cd portfolio
 # Install dependencies
 npm install
 
-# Run the app
+# Start dev server
 npm run dev
-````
+```
 
-## 🖼️ Preview
+The app will be available at `http://localhost:5173`.
 
-![screenshot](https://i.ibb.co/0j4brtVY/me.jpg)
+### Build for Production
 
-## 📃 License
+```bash
+npm run build
+npm run preview   # preview the production build locally
+```
 
-This project is licensed for personal and portfolio use only.
+## 📁 Project Structure
+
+```
+src/
+├── components/
+│   ├── layout/       # Header, Footer, Layout
+│   ├── sections/     # Hero, About, Projects, Skills, Contact
+│   └── ui/           # Button, Card, Badge, Input, Textarea
+├── lib/
+│   ├── constants.ts  # Projects, skills, social links, profile data
+│   ├── utils.ts      # cn() class-merge utility
+│   └── useScrollAnimation.ts
+├── pages/
+│   └── HomePage.tsx
+└── types/
+    └── index.ts      # TypeScript interfaces
+```
+
+## 📄 License
+
+This project is open source and available under the [MIT License](LICENSE).
+
+---
+
+<p align="center">
+  Built with ❤️ by <strong>Belal Waheed</strong>
+</p>
