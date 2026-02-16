@@ -14,7 +14,7 @@ const contactInfo = [
   { icon: MapPin, value: 'Cairo, Egypt' },
   { icon: Mail, value: 'belalwaheed000@gmail.com', href: 'mailto:belalwaheed000@gmail.com' },
   { icon: Phone, value: '+20 1111004353', href: 'tel:+201111004353' },
-  { icon: Globe, value: 'belal-waheed.vercel.app', href: SEO_CONFIG.siteUrl },
+  { icon: Globe, value: 'belalwaheed.vercel.app', href: SEO_CONFIG.siteUrl },
 ];
 
 const profileLinks = [

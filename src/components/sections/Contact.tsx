@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react';
+import emailjs from '@emailjs/browser';
 import { motion, useScroll, useTransform, useInView, AnimatePresence } from 'framer-motion';
 import { Send, Mail, MapPin, Clock, Github, Linkedin, Instagram, Check, Loader2 } from 'lucide-react';
 import { Button, Input, Textarea } from '@/components/ui';
@@ -16,6 +17,7 @@ export function Contact() {
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState(false);
 
   const sectionRef = useRef<HTMLElement>(null);
   const isInView = useInView(sectionRef, { once: true, amount: 0.15 });
@@ -40,11 +42,28 @@ export function Contact() {
     e.preventDefault();
     if (!validate()) return;
     setIsSubmitting(true);
-    await new Promise(r => setTimeout(r, 1500));
-    setIsSubmitting(false);
-    setIsSubmitted(true);
-    setFormData({ name: '', email: '', subject: '', message: '' });
-    setTimeout(() => setIsSubmitted(false), 5000);
+    setSubmitError(false);
+    try {
+      await emailjs.send(
+        'service_o3d2uc5',
+        'template_o2gusv1',
+        {
+          name: formData.name,
+          email: formData.email,
+          subject: formData.subject,
+          message: formData.message,
+        },
+        'jrjUqX1i4HAU6UWuZ'
+      );
+      setIsSubmitted(true);
+      setFormData({ name: '', email: '', subject: '', message: '' });
+      setTimeout(() => setIsSubmitted(false), 5000);
+    } catch {
+      setSubmitError(true);
+      setTimeout(() => setSubmitError(false), 5000);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -160,6 +179,21 @@ export function Contact() {
                     </div>
                     <h3 className="text-xl font-semibold font-display mb-2">Message Sent!</h3>
                     <p className="text-sm text-muted-foreground">Thank you! I'll get back to you soon.</p>
+                  </motion.div>
+                ) : submitError ? (
+                  <motion.div
+                    key="error"
+                    className="flex flex-col items-center justify-center py-14 text-center"
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ duration: 0.4 }}
+                  >
+                    <div className="w-14 h-14 rounded-2xl bg-red-500/15 flex items-center justify-center mb-5">
+                      <Mail size={28} className="text-red-400" />
+                    </div>
+                    <h3 className="text-xl font-semibold font-display mb-2">Failed to send</h3>
+                    <p className="text-sm text-muted-foreground">Something went wrong. Please try again or email me directly.</p>
                   </motion.div>
                 ) : (
                   <motion.form onSubmit={handleSubmit} className="space-y-5" key="form" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>

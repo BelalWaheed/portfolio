@@ -2,7 +2,7 @@
 
 A modern, responsive portfolio website showcasing my projects, skills, and experience as a Frontend Developer.
 
-**[🌐 Live Demo](https://belal-waheed.vercel.app)** · **[📄 Resume](https://belal-waheed.vercel.app/resume)** · **[📧 Contact](mailto:belalwaheed000@gmail.com)**
+**[🌐 Live Demo](https://belalwaheed.vercel.app)** · **[📄 Resume](https://belalwaheed.vercel.app/resume)** · **[📧 Contact](mailto:belalwaheed000@gmail.com)**
 
 ---
 

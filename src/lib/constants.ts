@@ -125,7 +125,7 @@ export const PROFILE = {
 };
 
 export const SEO_CONFIG = {
-  siteUrl: 'https://belal-waheed.vercel.app',
+  siteUrl: 'https://belalwaheed.vercel.app',
   siteName: 'Belal Waheed | Frontend Developer',
   siteDescription:
     'Belal Waheed — Frontend Developer based in Cairo, crafting modern web experiences with React, TypeScript & Tailwind CSS. View my portfolio, projects, and get in touch.',
