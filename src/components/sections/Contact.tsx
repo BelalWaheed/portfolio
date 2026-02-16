@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import { motion, useScroll, useTransform, useInView, AnimatePresence } from 'framer-motion';
-import { Send, Mail, MapPin, Clock, Github, Linkedin, Instagram, ArrowUpRight, Check, Loader2 } from 'lucide-react';
+import { Send, Mail, MapPin, Clock, Github, Linkedin, Instagram, Check, Loader2 } from 'lucide-react';
 import { Button, Input, Textarea } from '@/components/ui';
 import { PROFILE, SOCIAL_LINKS } from '@/lib/constants';
 
