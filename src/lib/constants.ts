@@ -12,7 +12,7 @@ export const SOCIAL_LINKS: SocialLink[] = [
   { name: 'GitHub', url: 'https://github.com/BelalWaheed', icon: 'github' },
   { name: 'LinkedIn', url: 'https://www.linkedin.com/in/belalwhaeed', icon: 'linkedin' },
   { name: 'Instagram', url: 'https://www.instagram.com/belalwaheed_/', icon: 'instagram' },
-  { name: 'Email', url: 'mailto:belalwaheed@example.com', icon: 'mail' },
+  { name: 'Email', url: 'mailto:belalwaheed000@gmail.com', icon: 'mail' },
 ];
 
 export const PROJECTS: Project[] = [
@@ -93,14 +93,16 @@ export const SKILLS: Skill[] = [
   { name: 'TypeScript', level: 85, category: 'frontend' },
   { name: 'JavaScript', level: 95, category: 'frontend' },
   { name: 'Tailwind CSS', level: 90, category: 'frontend' },
-  { name: 'Redux', level: 88, category: 'frontend' },
+  { name: 'Redux Toolkit', level: 88, category: 'frontend' },
+  { name: 'Next.js', level: 75, category: 'frontend' },
   { name: 'HTML/CSS', level: 95, category: 'frontend' },
   { name: 'Vite', level: 85, category: 'frontend' },
   // Backend
-  { name: 'Node.js', level: 75, category: 'backend' },
   { name: 'C#', level: 80, category: 'backend' },
+  { name: 'C++', level: 75, category: 'backend' },
   { name: 'SQL Server', level: 78, category: 'backend' },
   { name: 'REST APIs', level: 85, category: 'backend' },
+  { name: 'Axios', level: 88, category: 'backend' },
   // Tools
   { name: 'Git', level: 90, category: 'tools' },
   { name: 'VS Code', level: 95, category: 'tools' },
@@ -112,10 +114,11 @@ export const PROFILE = {
   name: 'Belal Waheed',
   title: 'Frontend Developer',
   tagline: 'Building modern web experiences with React & TypeScript',
-  bio: `I'm a passionate Frontend Developer based in Cairo with expertise in building 
-        modern, responsive web applications. I specialize in React, TypeScript, and 
-        Tailwind CSS, with a keen eye for design and user experience. I love turning 
-        complex problems into elegant, user-friendly solutions.`,
+  bio: `Information Technology student specializing in Front-End Development with 
+        hands-on experience building scalable and responsive web applications using 
+        React, TypeScript, Redux Toolkit, and Tailwind CSS. Strong understanding of 
+        state management, REST API integration, authentication systems, and 
+        performance optimization.`,
   location: 'Cairo, Egypt',
   email: 'belalwaheed000@gmail.com',
   availability: true,

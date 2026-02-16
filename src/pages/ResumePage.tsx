@@ -99,8 +99,6 @@ function SectionHeading({ icon: Icon, title, delay = 0 }: {
 
 /* ── Page ── */
 export function ResumePage() {
-  const handlePrint = () => window.print();
-
   return (
     <>
       <SEO
@@ -123,9 +121,11 @@ export function ResumePage() {
               Back to Portfolio
             </Button>
           </Link>
-          <Button size="sm" onClick={handlePrint}>
-            <Download size={16} />
-            Download PDF
+          <Button size="sm" asChild>
+            <a href="/Belal_Waheed.pdf" download="Belal_Waheed.pdf">
+              <Download size={16} />
+              Download PDF
+            </a>
           </Button>
         </motion.div>
 
@@ -246,9 +246,10 @@ export function ResumePage() {
               <SectionHeading icon={Briefcase} title="Experience" delay={0.3} />
               <motion.div
                 className="glass rounded-xl p-5 glow-border print:border print:border-gray-200 print:bg-gray-50"
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.35 }}
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
               >
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 mb-3">
                   <div>
@@ -257,23 +258,21 @@ export function ResumePage() {
                   </div>
                   <span className="text-xs text-muted-foreground print:text-gray-500 font-mono shrink-0">Aug 2024 — Present</span>
                 </div>
-                <motion.ul
-                  className="space-y-2"
-                  variants={stagger}
-                  initial="hidden"
-                  animate="visible"
-                >
-                  {experienceBullets.map((bullet) => (
+                <ul className="space-y-2">
+                  {experienceBullets.map((bullet, i) => (
                     <motion.li
                       key={bullet}
-                      variants={fadeUp}
+                      initial={{ opacity: 0, x: -10 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.4, delay: i * 0.08, ease: [0.16, 1, 0.3, 1] }}
                       className="text-sm text-muted-foreground leading-relaxed flex items-start gap-2 print:text-gray-700"
                     >
                       <ChevronRight size={14} className="text-accent-1/60 shrink-0 mt-0.5 print:text-gray-400" />
                       {bullet}
                     </motion.li>
                   ))}
-                </motion.ul>
+                </ul>
               </motion.div>
             </section>
 

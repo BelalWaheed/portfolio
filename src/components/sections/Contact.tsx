@@ -135,20 +135,6 @@ export function Contact() {
               </div>
             </div>
 
-            {/* Quick Response */}
-            <div className="glass rounded-xl p-5 glow-border">
-              <div className="flex gap-3">
-                <div className="p-2 rounded-lg bg-accent-2/10">
-                  <ArrowUpRight size={16} className="text-accent-2" />
-                </div>
-                <div>
-                  <p className="font-medium text-sm mb-1">Quick Response</p>
-                  <p className="text-xs text-muted-foreground leading-relaxed">
-                    I usually reply within 24 hours. For urgent matters, reach out on LinkedIn.
-                  </p>
-                </div>
-              </div>
-            </div>
           </motion.div>
 
           {/* Right: Form */}

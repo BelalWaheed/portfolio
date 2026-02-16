@@ -2,7 +2,7 @@
 
 A modern, responsive portfolio website showcasing my projects, skills, and experience as a Frontend Developer.
 
-**[🌐 Live Demo](https://belal-waheed.vercel.app)** · **[📧 Contact](mailto:belalwaheed000@gmail.com)**
+**[🌐 Live Demo](https://belal-waheed.vercel.app)** · **[📄 Resume](https://belal-waheed.vercel.app/resume)** · **[📧 Contact](mailto:belalwaheed000@gmail.com)**
 
 ---
 
@@ -12,6 +12,8 @@ A modern, responsive portfolio website showcasing my projects, skills, and exper
 - **Earthy green dark theme** with custom design system
 - **Fully responsive** — optimized for all screen sizes
 - **Accessible UI** components built with Radix UI
+- **Resume page** with downloadable PDF and print-friendly layout
+- **SEO optimized** — Open Graph, Twitter Cards, JSON-LD structured data, sitemap
 - **Blazing fast** — React 19 + Vite + React Compiler
 
 ## 🛠 Tech Stack
@@ -25,6 +27,7 @@ A modern, responsive portfolio website showcasing my projects, skills, and exper
 | **Icons**         | Lucide React                             |
 | **Routing**       | React Router                             |
 | **Build**         | Vite, React Compiler (Babel)             |
+| **Deployment**    | Vercel                                   |
 
 ## 🚀 Getting Started
 
@@ -63,15 +66,22 @@ src/
 ├── components/
 │   ├── layout/       # Header, Footer, Layout
 │   ├── sections/     # Hero, About, Projects, Skills, Contact
-│   └── ui/           # Button, Card, Badge, Input, Textarea
+│   ├── ui/           # Button, Card, Badge, Input, Textarea
+│   ├── SEO.tsx       # React 19 native metadata (OG, Twitter, canonical)
+│   └── JsonLd.tsx    # Structured data (Person + WebSite schema)
 ├── lib/
-│   ├── constants.ts  # Projects, skills, social links, profile data
+│   ├── constants.ts  # Projects, skills, social links, profile & SEO config
 │   ├── utils.ts      # cn() class-merge utility
 │   └── useScrollAnimation.ts
 ├── pages/
-│   └── HomePage.tsx
+│   ├── HomePage.tsx
+│   └── ResumePage.tsx
 └── types/
     └── index.ts      # TypeScript interfaces
+public/
+├── robots.txt
+├── sitemap.xml
+└── Belal_Waheed.pdf  # Downloadable resume
 ```
 
 ## 📄 License

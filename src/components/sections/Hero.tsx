@@ -1,5 +1,6 @@
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { ArrowDown, Sparkles } from 'lucide-react';
+import { Link } from 'react-router';
 import { Button } from '@/components/ui';
 import { PROFILE } from '@/lib/constants';
 
@@ -17,7 +18,7 @@ export function Hero() {
 
   return (
     <motion.section 
-      className="relative min-h-screen flex items-center overflow-hidden"
+      className="relative min-h-screen flex items-center overflow-hidden pt-24 lg:pt-0"
       style={{ opacity: heroOpacity }}
     >
       {/* Background decorative elements */}
@@ -122,9 +123,9 @@ export function Hero() {
                 Get In Touch
               </Button>
               <Button variant="outline" size="lg" asChild>
-                <a href="/resume">
+                <Link to="/resume">
                   Resume
-                </a>
+                </Link>
               </Button>
             </motion.div>
 

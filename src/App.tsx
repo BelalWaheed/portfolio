@@ -7,6 +7,7 @@ export function App() {
     <BrowserRouter>
       <Routes>
         <Route element={<Layout />}>
+        
           <Route path="/" element={<HomePage />} />
         </Route>
         <Route path="/resume" element={<ResumePage />} />

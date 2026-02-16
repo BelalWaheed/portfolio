@@ -5,20 +5,20 @@ import { PROFILE } from '@/lib/constants';
 
 const experiences = [
   {
-    title: 'Frontend Developer',
-    company: 'Freelance',
-    period: '2022 – Present',
-    description: 'Building modern web applications with React, TypeScript, and cutting-edge technologies.',
-    icon: Briefcase,
-    color: 'var(--color-accent-1)',
-  },
-  {
-    title: 'Web Development Journey',
-    company: 'Self-taught & Projects',
-    period: '2020 – 2022',
-    description: 'Intensive learning focusing on the React ecosystem, state management, and UI/UX principles.',
+    title: 'Bachelor of Information Technology',
+    company: 'Sinai University – Arish',
+    period: 'Sep 2023 – Present',
+    description: 'Studying Information Technology with a focus on software engineering and front-end development. GPA: 3.3',
     icon: GraduationCap,
     color: 'var(--color-accent-2)',
+  },
+  {
+    title: 'Frontend Developer',
+    company: 'Freelance / Self Projects',
+    period: 'Aug 2024 – Present',
+    description: 'Building responsive SPAs with React and TypeScript. Implementing Redux Toolkit state management, REST API integration, and authentication workflows.',
+    icon: Briefcase,
+    color: 'var(--color-accent-1)',
   },
 ];
 
@@ -144,9 +144,10 @@ export function About() {
                   <motion.div 
                     key={index}
                     className="relative pl-12"
-                    initial={{ opacity: 0, y: 25 }}
-                    animate={isInView ? { opacity: 1, y: 0 } : {}}
-                    transition={{ duration: 0.5, delay: 0.4 + index * 0.15, ease: [0.16, 1, 0.3, 1] }}
+                    initial={{ opacity: 0, x: -15 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true, amount: 0.4 }}
+                    transition={{ duration: 0.5, delay: index * 0.15, ease: [0.16, 1, 0.3, 1] }}
                   >
                     {/* Timeline dot */}
                     <div 

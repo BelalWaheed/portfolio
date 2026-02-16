@@ -26,9 +26,6 @@ export function Footer() {
         <div className="flex flex-col sm:flex-row items-center justify-between gap-5">
           {/* Logo */}
           <Link to="/" className="group flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-accent-1/15 flex items-center justify-center border border-accent-1/20">
-              <span className="text-accent-1 font-display font-bold text-xs">B</span>
-            </div>
             <span className="font-display font-semibold text-sm text-muted-foreground group-hover:text-foreground transition-colors">
               Belal<span className="text-accent-1">.</span>
             </span>

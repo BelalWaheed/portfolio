@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
-import { Link } from 'react-router';
 import { Menu, X, Github, Linkedin, Instagram } from 'lucide-react';
 import { Button } from '@/components/ui';
 import { NAV_ITEMS, SOCIAL_LINKS } from '@/lib/constants';
@@ -41,7 +40,9 @@ export function Header() {
 
   const handleNavClick = (href: string) => {
     setIsMobileMenuOpen(false);
-    if (href.startsWith('#')) {
+    if (href === '/') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (href.startsWith('#')) {
       document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' });
     }
   };
@@ -61,20 +62,17 @@ export function Header() {
       <div className="container mx-auto px-6 lg:px-8">
         <nav className="flex items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="group">
+          <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="group">
             <motion.div 
               className="flex items-center gap-1"
               whileHover={{ scale: 1.03 }}
               transition={{ type: 'spring', stiffness: 400, damping: 20 }}
             >
-              <div className="w-8 h-8 rounded-lg bg-accent-1/15 flex items-center justify-center border border-accent-1/20">
-                <span className="text-accent-1 font-display font-bold text-sm">B</span>
-              </div>
-              <span className="text-foreground font-display font-semibold text-lg ml-2 hidden sm:inline">
+              <span className="text-foreground font-display font-semibold text-lg">
                 Belal<span className="text-accent-1">.</span>
               </span>
             </motion.div>
-          </Link>
+          </button>
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-1">
