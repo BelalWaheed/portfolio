@@ -44,21 +44,27 @@ export function Contact() {
     setIsSubmitting(true);
     setSubmitError(false);
     try {
+      // It's important that these variables exactly match the {{ variables }} in your EmailJS template!
       await emailjs.send(
-        'service_o3d2uc5',
-        'template_o2gusv1',
+        import.meta.env.VITE_EMAILJS_SERVICE_ID,
+        import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
         {
           name: formData.name,
           email: formData.email,
-          subject: formData.subject,
+          subject: formData.subject || 'New Portfolio Contact',
           message: formData.message,
+          // Common EmailJS template fields (just in case)
+          from_name: formData.name,
+          reply_to: formData.email,
         },
-        'jrjUqX1i4HAU6UWuZ'
+        import.meta.env.VITE_EMAILJS_PUBLIC_KEY
       );
+
       setIsSubmitted(true);
       setFormData({ name: '', email: '', subject: '', message: '' });
       setTimeout(() => setIsSubmitted(false), 5000);
-    } catch {
+    } catch (error) {
+      console.error('EmailJS Error:', error); // Log the exact error to the console so we can debug it
       setSubmitError(true);
       setTimeout(() => setSubmitError(false), 5000);
     } finally {

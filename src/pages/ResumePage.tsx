@@ -23,45 +23,53 @@ const profileLinks = [
 ];
 
 const skills = {
-  Languages: ['JavaScript (ES6+)', 'TypeScript', 'C++', 'C#'],
-  'Front-End': ['React', 'Redux Toolkit', 'Next.js', 'Tailwind CSS', 'HTML5', 'CSS3'],
-  Concepts: ['State Management', 'REST APIs', 'Authentication & Authorization', 'Component-Based Architecture', 'Performance Optimization'],
-  Tools: ['Git', 'GitHub', 'VS Code', 'Figma', 'Vite', 'Axios'],
+  'Frontend': ['React.js', 'Redux Toolkit', 'Next.js', 'JavaScript (ES6+)', 'HTML5', 'CSS3', 'Tailwind CSS', 'Framer Motion'],
+  'Backend': ['Node.js', 'Express.js', 'RESTful APIs', 'ASP.NET Core', 'JWT Authentication', 'bcrypt'],
+  'Database': ['MongoDB', 'SQL Server'],
+  'Tools & Platforms': ['Git', 'GitHub', 'Vercel', 'VS Code', 'Figma', 'Postman'],
 };
 
 const skillIcons: Record<string, React.ComponentType<{ size?: number; className?: string }>> = {
-  Languages: Code2,
-  'Front-End': Layers,
-  Concepts: Wrench,
-  Tools: Wrench,
+  'Frontend': Layers,
+  'Backend': Code2,
+  'Database': Wrench,
+  'Tools & Platforms': Wrench,
 };
 
 const experienceBullets = [
-  'Built responsive single-page applications (SPA) using React and TypeScript.',
-  'Implemented global state management using Redux Toolkit.',
-  'Integrated RESTful APIs and developed authentication workflows.',
-  'Optimized application performance and improved loading speed.',
-  'Applied clean code principles and modular component architecture.',
+  'Delivered a client-facing product (Tivaq) with a custom admin dashboard, rich UI, and a product authenticity verification system.',
+  'Collaborated with a teammate on Moviq, a large-scale movie and series platform, gaining practical experience in async workflows and code review.',
+  'Implemented JWT authentication, bcrypt password hashing, and role-based access control across multiple projects.',
 ];
 
 const projects = [
   {
-    title: 'Moviq — Movie & TV Discovery Platform',
+    title: 'Tivaq — Fragrance E-commerce',
+    url: 'https://github.com/BelalWaheed/Tivaq',
+    tech: ['React', 'Node.js', 'Express', 'MongoDB', 'Tailwind CSS', 'i18n'],
+    description: [
+      'Built a client-facing fragrance e-commerce platform featuring a rich, polished UI and smooth product browsing experience.',
+      'Developed a comprehensive admin dashboard for inventory, order, and user management.',
+      'Implemented a custom product authenticity verification system, allowing customers to confirm the origin of their purchases via a unique code flow.',
+    ],
+  },
+  {
+    title: 'Moviq — Movie Discovery',
     url: 'https://moviqq.vercel.app',
-    tech: ['React', 'Redux', 'Tailwind CSS', 'TMDB API'],
-    description: 'Comprehensive movie and TV discovery platform with TMDB integration, content browsing, trailers, cast info, user authentication, and responsive dark theme design.',
+    tech: ['React', 'Node.js', 'TMDB API', 'Tailwind CSS'],
+    description: [
+      'Co-developed a full-featured movie and TV series discovery platform powered by the TMDB API, displaying cast, ratings, trailers, and related titles.',
+      'Worked collaboratively with a teammate using Git branching, pull requests, and code reviews — gaining realworld team workflow experience.',
+    ],
   },
   {
-    title: 'React Commerce — Full-Stack E-Commerce',
-    url: 'https://github.com/BelalWaheed/eCommerce',
-    tech: ['React', 'Redux Toolkit', 'Axios'],
-    description: 'Full-stack e-commerce platform with user storefront, admin dashboard, cart management, product CRUD, user administration, and store activity overview.',
-  },
-  {
-    title: 'Store Management System — Desktop App',
-    url: 'https://github.com/BelalWaheed/Store-Management-System',
-    tech: ['C#', '.NET', 'SQL Server'],
-    description: 'Windows Forms application for store management using SQL Server to handle products, customers, and orders with a complete admin interface.',
+    title: 'Obel — Productivity App',
+    url: 'https://github.com/BelalWaheed/Obel',
+    tech: ['React', 'Node.js', 'Express', 'MongoDB', 'Tailwind CSS'],
+    description: [
+      'Designed and built a personal productivity application that unifies task management and note-taking in a single, cohesive workspace — inspired by Obsidian.',
+      'Architected the backend with a RESTful API and MongoDB for flexible, schema-driven content storage.',
+    ],
   },
 ];
 
@@ -102,8 +110,8 @@ export function ResumePage() {
   return (
     <>
       <SEO
-        title="Resume — Belal Waheed | Frontend Developer"
-        description="Belal Waheed's resume — Frontend Developer specializing in React, TypeScript, and modern web technologies. View education, skills, projects, and experience."
+        title="Resume — Belal Waheed | Full-Stack Developer"
+        description="Belal Waheed's resume — Full-Stack Developer specializing in React, Node.js, and MongoDB. View education, skills, projects, and experience."
         canonical={`${SEO_CONFIG.siteUrl}/resume`}
       />
 
@@ -122,7 +130,7 @@ export function ResumePage() {
             </Button>
           </Link>
           <Button size="sm" asChild>
-            <a href="/Belal_Waheed.pdf" download="Belal_Waheed.pdf">
+            <a href="/Belal_Waheed_Resume.pdf" download="Belal_Waheed_Resume.pdf">
               <Download size={16} />
               Download PDF
             </a>
@@ -153,7 +161,7 @@ export function ResumePage() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
             >
-              Front-End Developer &nbsp;|&nbsp; React &amp; TypeScript Specialist
+              Full-Stack Developer &nbsp;|&nbsp; React, Node.js &amp; MongoDB
             </motion.p>
 
             {/* Contact row */}
@@ -202,11 +210,8 @@ export function ResumePage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.2 }}
               >
-                Information Technology student specializing in Front-End Development with hands-on experience
-                building scalable and responsive web applications using React, TypeScript, Redux Toolkit, and
-                Tailwind CSS. Strong understanding of state management, REST API integration, authentication
-                systems, and performance optimization. Passionate about writing clean, maintainable code and
-                delivering high-quality user experiences.
+                Full-Stack Developer and Information Technology student. Proficient in React, Node.js, and MongoDB,
+                with a strong focus on clean architecture, performance, and user experience.
               </motion.p>
             </section>
 
@@ -253,8 +258,8 @@ export function ResumePage() {
               >
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 mb-3">
                   <div>
-                    <h3 className="font-semibold text-foreground print:text-black">Front-End Developer</h3>
-                    <p className="text-sm text-accent-1 font-medium print:text-gray-600">Freelance / Self Projects</p>
+                    <h3 className="font-semibold text-foreground print:text-black">Full-Stack Developer</h3>
+                    <p className="text-sm text-accent-1 font-medium print:text-gray-600">Self-Initiated & Client Projects</p>
                   </div>
                   <span className="text-xs text-muted-foreground print:text-gray-500 font-mono shrink-0">Aug 2024 — Present</span>
                 </div>
@@ -305,9 +310,14 @@ export function ResumePage() {
                         <ExternalLink size={15} />
                       </a>
                     </div>
-                    <p className="text-sm text-muted-foreground leading-relaxed mb-3 print:text-gray-600">
-                      {project.description}
-                    </p>
+                    <ul className="space-y-1.5 mb-3">
+                      {project.description.map((desc, idx) => (
+                        <li key={idx} className="text-sm text-muted-foreground leading-relaxed flex items-start gap-2 print:text-gray-600">
+                          <span className="text-accent-1/60 shrink-0 mt-0.5">•</span>
+                          <span>{desc}</span>
+                        </li>
+                      ))}
+                    </ul>
                     <div className="flex flex-wrap gap-1.5">
                       {project.tech.map((t) => (
                         <span key={t} className="px-2 py-0.5 rounded-md text-[11px] font-medium bg-accent-1/8 text-accent-1/80 print:bg-gray-100 print:text-gray-600">
