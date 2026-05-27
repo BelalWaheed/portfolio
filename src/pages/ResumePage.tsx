@@ -7,6 +7,7 @@ import {
 import { Link } from 'react-router';
 import { Button } from '@/components/ui';
 import { SEO } from '@/components/SEO';
+import { JsonLd } from '@/components/JsonLd';
 import { PROFILE, SEO_CONFIG } from '@/lib/constants';
 
 /* ── Data ── */
@@ -114,6 +115,7 @@ export function ResumePage() {
         description="Belal Waheed's resume — Full-Stack Developer specializing in React, Node.js, and MongoDB. View education, skills, projects, and experience."
         canonical={`${SEO_CONFIG.siteUrl}/resume`}
       />
+      <JsonLd type="resume" />
 
       <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8 print:p-0 print:bg-white print:min-h-0">
         {/* Top bar */}
