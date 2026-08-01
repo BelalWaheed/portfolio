@@ -11,11 +11,11 @@ const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
       <span
         ref={ref}
         className={cn(
-          'inline-flex items-center rounded-full px-3 py-1 text-xs font-medium transition-colors',
+          'inline-flex items-center rounded-md px-2.5 py-0.5 text-xs font-medium transition-colors',
           {
-            'bg-accent-1/10 text-accent-1': variant === 'default',
-            'bg-muted text-muted-foreground border border-border/50': variant === 'secondary',
-            'border border-border text-muted-foreground hover:text-foreground hover:border-accent-1/20': variant === 'outline',
+            'bg-accent/10 text-accent border border-accent/20': variant === 'default',
+            'bg-bg-element text-text-muted border border-border-default': variant === 'secondary',
+            'border border-border-default text-text-muted hover:text-text-primary': variant === 'outline',
           },
           className
         )}

@@ -7,18 +7,13 @@ interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const Card = React.forwardRef<HTMLDivElement, CardProps>(
-  ({ className, variant = 'default', hover = false, ...props }, ref) => {
+  ({ className, hover = false, ...props }, ref) => {
     return (
       <div
         ref={ref}
         className={cn(
-          'rounded-xl p-6 transition-all duration-300',
-          {
-            'bg-card border border-border': variant === 'default',
-            'glass': variant === 'glass',
-            'gradient-border': variant === 'gradient',
-          },
-          hover && 'hover:scale-[1.02] hover:shadow-xl hover:shadow-primary/5',
+          'studio-card p-6',
+          hover && 'studio-card-hover',
           className
         )}
         {...props}

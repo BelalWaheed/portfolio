@@ -8,7 +8,8 @@ interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement
 
 const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
   ({ className, label, error, id, ...props }, ref) => {
-    const textareaId = id || React.useId();
+    const generatedId = React.useId();
+    const textareaId = id || generatedId;
     
     return (
       <div className="space-y-2">
@@ -20,12 +21,9 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
         <textarea
           id={textareaId}
           className={cn(
-            'flex min-h-[140px] w-full rounded-xl border border-border bg-muted/40 px-4 py-3 text-sm text-foreground transition-all duration-300 resize-none',
-            'placeholder:text-muted-foreground/50',
-            'focus:outline-none focus:ring-2 focus:ring-accent-1/20 focus:border-accent-1/40',
-            'hover:border-accent-1/15 hover:bg-muted/60',
+            'flex min-h-[140px] w-full studio-input px-4 py-3 text-sm text-text-primary transition-all duration-200 resize-none',
             'disabled:cursor-not-allowed disabled:opacity-50',
-            error && 'border-red-500/50 focus:ring-red-500/20',
+            error && 'border-status-error focus:ring-status-error/20',
             className
           )}
           ref={ref}

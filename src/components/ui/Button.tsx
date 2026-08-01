@@ -4,28 +4,28 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-sm font-medium transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-1/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 cursor-pointer',
+  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-sm font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 cursor-pointer',
   {
     variants: {
       variant: {
         default:
-          'bg-accent-1 text-background font-semibold hover:bg-accent-1/90 shadow-lg shadow-accent-1/15 hover:shadow-accent-1/25 hover:scale-[1.02] active:scale-[0.98]',
+          'bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:scale-[1.02] active:scale-[0.98] border border-white/20',
         secondary:
-          'bg-muted text-foreground hover:bg-muted/80 border border-border hover:border-accent-1/20',
+          'bg-white/80 backdrop-blur-md text-slate-800 border border-slate-200/90 shadow-xs hover:bg-white hover:border-indigo-300 hover:text-indigo-600 hover:scale-[1.02] active:scale-[0.98]',
         outline:
-          'border border-border bg-transparent hover:bg-muted/50 hover:border-accent-1/20 text-foreground',
+          'bg-white/80 backdrop-blur-md text-slate-800 border border-slate-200/90 shadow-xs hover:bg-white hover:border-indigo-300 hover:text-indigo-600 hover:scale-[1.02] active:scale-[0.98]',
         ghost:
-          'hover:bg-muted/50 hover:text-foreground',
+          'hover:bg-indigo-50 hover:text-indigo-600 text-slate-700',
         link:
-          'text-accent-1 underline-offset-4 hover:underline',
+          'text-indigo-600 underline-offset-4 hover:underline',
         gradient:
-          'bg-gradient-to-r from-accent-1 via-accent-2 to-accent-1 text-background font-bold shadow-lg shadow-accent-1/15 hover:shadow-xl hover:shadow-accent-1/20 hover:scale-[1.02] active:scale-[0.98] bg-[length:200%_200%] animate-gradient',
+          'bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 text-white shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50 hover:scale-[1.02] active:scale-[0.98] border border-white/20',
       },
       size: {
-        default: 'h-11 px-6 py-2',
+        default: 'h-11 px-6 py-2.5',
         sm: 'h-9 px-4 text-xs',
-        lg: 'h-12 px-8 text-base',
-        xl: 'h-14 px-10 text-lg',
+        lg: 'h-12 px-7 text-base',
+        xl: 'h-14 px-9 text-lg',
         icon: 'h-10 w-10',
       },
     },
@@ -56,4 +56,5 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 );
 Button.displayName = 'Button';
 
+// eslint-disable-next-line react-refresh/only-export-components
 export { Button, buttonVariants };
