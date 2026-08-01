@@ -1,4 +1,4 @@
-import { SEO_CONFIG, PROFILE } from '@/lib/constants';
+import { SEO_CONFIG, PROFILE } from '@/data/constants';
 
 interface SEOProps {
   title?: string;

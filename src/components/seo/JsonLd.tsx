@@ -1,4 +1,4 @@
-import { PROFILE, SEO_CONFIG, SOCIAL_LINKS, SKILLS } from '@/lib/constants';
+import { PROFILE, SEO_CONFIG, SOCIAL_LINKS, SKILLS } from '@/data/constants';
 
 interface JsonLdProps {
   type?: 'home' | 'resume';
