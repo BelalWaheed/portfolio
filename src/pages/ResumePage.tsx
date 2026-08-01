@@ -6,9 +6,9 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router';
 import { Button } from '@/components/ui';
-import { SEO } from '@/components/SEO';
-import { JsonLd } from '@/components/JsonLd';
-import { PROFILE, SEO_CONFIG } from '@/lib/constants';
+import { SEO } from '@/components/seo/SEO';
+import { JsonLd } from '@/components/seo/JsonLd';
+import { PROFILE, SEO_CONFIG } from '@/data/constants';
 
 /* ── Data ── */
 const contactInfo = [
@@ -117,7 +117,8 @@ export function ResumePage() {
       />
       <JsonLd type="resume" />
 
-      <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8 print:p-0 print:bg-white print:min-h-0">
+      <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8 print:p-0 print:bg-white print:min-h-0 relative">
+        <div className="ambient-mesh-bg print:hidden" />
         {/* Top bar */}
         <motion.div
           className="max-w-4xl mx-auto mb-6 flex items-center justify-between print:hidden"

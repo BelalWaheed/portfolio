@@ -6,8 +6,8 @@ import { Footer } from './Footer';
 export function Layout() {
   return (
     <div className="min-h-screen flex flex-col overflow-x-hidden">
-      {/* Ambient Background */}
-      <div className="ambient-bg" />
+      {/* Ambient Aurora Mesh Background */}
+      <div className="ambient-mesh-bg" />
       
       {/* Noise Overlay */}
       <div className="noise-overlay" />

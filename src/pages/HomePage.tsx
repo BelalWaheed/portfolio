@@ -1,6 +1,6 @@
 import { Hero, About, Projects, Skills, Contact } from '@/components/sections';
-import { SEO } from '@/components/SEO';
-import { JsonLd } from '@/components/JsonLd';
+import { SEO } from '@/components/seo/SEO';
+import { JsonLd } from '@/components/seo/JsonLd';
 
 export function HomePage() {
   return (
