@@ -2,15 +2,13 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { ArrowDown, Sparkles } from 'lucide-react';
 import { Link } from 'react-router';
 import { Button } from '@/components/ui';
-import { PROFILE } from '@/lib/constants';
+import { PROFILE } from '@/data/constants';
 
 export function Hero() {
   const { scrollY } = useScroll();
   const heroOpacity = useTransform(scrollY, [0, 600], [1, 0]);
-  const heroScale = useTransform(scrollY, [0, 600], [1, 0.95]);
-  const heroY = useTransform(scrollY, [0, 600], [0, 100]);
-  const imageY = useTransform(scrollY, [0, 600], [0, -50]);
-  const imageRotate = useTransform(scrollY, [0, 600], [0, 3]);
+  const heroScale = useTransform(scrollY, [0, 600], [1, 0.96]);
+  const heroY = useTransform(scrollY, [0, 600], [0, 60]);
 
   const handleScrollDown = () => {
     document.querySelector('#about')?.scrollIntoView({ behavior: 'smooth' });
@@ -18,70 +16,30 @@ export function Hero() {
 
   return (
     <motion.section 
-      className="relative min-h-screen flex items-center overflow-hidden pt-24 lg:pt-0"
+      className="relative min-h-[90vh] lg:min-h-screen flex items-center pt-24 pb-12 lg:py-0 overflow-hidden"
       style={{ opacity: heroOpacity }}
     >
-      {/* Background decorative elements */}
-      <div className="absolute inset-0 pointer-events-none">
-        <motion.div 
-          className="absolute w-[700px] h-[700px] rounded-full opacity-[0.07]"
-          style={{
-            background: 'radial-gradient(circle, var(--color-accent-1), transparent 70%)',
-            left: '-10%',
-            top: '-20%',
-            filter: 'blur(120px)',
-            y: useTransform(scrollY, [0, 500], [0, -80]),
-          }}
-        />
-        <motion.div 
-          className="absolute w-[500px] h-[500px] rounded-full opacity-[0.05]"
-          style={{
-            background: 'radial-gradient(circle, var(--color-accent-3), transparent 70%)',
-            right: '-5%',
-            bottom: '0%',
-            filter: 'blur(100px)',
-            y: useTransform(scrollY, [0, 500], [0, 60]),
-          }}
-        />
-      </div>
-
       <motion.div 
         className="container mx-auto px-6 lg:px-8 relative z-10"
         style={{ y: heroY, scale: heroScale }}
       >
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center min-h-[80vh]">
+        <div className="grid lg:grid-cols-12 gap-10 lg:gap-12 items-center">
           
-          {/* Left: Text */}
+          {/* Left Column: Headline & Intro */}
           <motion.div 
-            className="order-2 lg:order-1"
-            initial={{ opacity: 0, x: -40 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            className="lg:col-span-7 flex flex-col items-start text-left order-2 lg:order-1"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
           >
-            {/* Status badge */}
-            {PROFILE.availability && (
-              <motion.div 
-                className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full glass glow-border mb-8"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-              >
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-1 opacity-60"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-accent-1"></span>
-                </span>
-                <span className="text-xs font-medium text-muted-foreground tracking-wide">Available for projects</span>
-              </motion.div>
-            )}
-
-            {/* Name  */}
+            {/* Name */}
             <motion.h1 
-              className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-bold leading-[0.95] tracking-tight mb-6"
-              initial={{ opacity: 0, y: 30 }}
+              className="text-4xl sm:text-6xl lg:text-7xl xl:text-8xl font-bold leading-[1.05] tracking-tight mb-4"
+              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: 0.7, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
             >
-              <span className="text-muted-foreground/70 block text-2xl sm:text-3xl font-medium mb-3 tracking-normal">
+              <span className="text-slate-500 font-medium text-xl sm:text-2xl lg:text-3xl block mb-1">
                 Hello, I'm
               </span>
               <span className="text-gradient block">{PROFILE.name}</span>
@@ -89,146 +47,104 @@ export function Hero() {
 
             {/* Title */}
             <motion.p 
-              className="text-xl sm:text-2xl text-muted-foreground font-light mb-4"
-              initial={{ opacity: 0, y: 20 }}
+              className="text-xl sm:text-2xl text-slate-700 font-semibold mb-4"
+              initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: 0.7, delay: 0.25 }}
             >
               {PROFILE.title}
             </motion.p>
 
             {/* Tagline */}
             <motion.p 
-              className="text-base text-muted-foreground/80 max-w-lg leading-relaxed mb-10"
-              initial={{ opacity: 0, y: 20 }}
+              className="text-base sm:text-lg text-slate-600 max-w-xl leading-relaxed mb-8"
+              initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.35 }}
             >
-              {PROFILE.tagline}. I build <span className="text-accent-1">pixel-perfect</span>{' '}
-              interfaces with clean code and smooth interactions.
+              {PROFILE.tagline}. I build <span className="text-indigo-600 font-medium">pixel-perfect</span> interfaces with clean code and smooth interactions.
             </motion.p>
 
             {/* CTAs */}
             <motion.div 
-              className="flex flex-wrap gap-4"
-              initial={{ opacity: 0, y: 20 }}
+              className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto"
+              initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.45 }}
             >
-              <Button size="lg" onClick={() => document.querySelector('#projects')?.scrollIntoView({ behavior: 'smooth' })}>
+              <Button size="lg" className="w-full sm:w-auto" onClick={() => document.querySelector('#projects')?.scrollIntoView({ behavior: 'smooth' })}>
                 <Sparkles size={18} />
                 View Projects
               </Button>
-              <Button variant="outline" size="lg" onClick={() => document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })}>
+              <Button variant="outline" size="lg" className="w-full sm:w-auto" onClick={() => document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })}>
                 Get In Touch
               </Button>
-              <Button variant="outline" size="lg" asChild>
+              <Button variant="outline" size="lg" className="w-full sm:w-auto" asChild>
                 <Link to="/resume">
                   Resume
                 </Link>
               </Button>
             </motion.div>
-
-            {/* Stats */}
-            <motion.div 
-              className="flex gap-10 mt-14 pt-8 border-t border-border/30"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.6, delay: 0.6 }}
-            >
-              {[
-                { value: '17+', label: 'Projects' },
-                { value: '3+', label: 'Years' },
-                { value: '100%', label: 'Passion' },
-              ].map((stat) => (
-                <div key={stat.label}>
-                  <p className="text-3xl sm:text-4xl font-bold font-display text-gradient">{stat.value}</p>
-                  <p className="text-xs text-muted-foreground mt-1 tracking-wider uppercase">{stat.label}</p>
-                </div>
-              ))}
-            </motion.div>
           </motion.div>
 
-          {/* Right: Photo */}
+          {/* Right Column: Profile Photo */}
           <motion.div 
-            className="order-1 lg:order-2 flex justify-center lg:justify-end"
-            initial={{ opacity: 0, x: 40, scale: 0.9 }}
-            animate={{ opacity: 1, x: 0, scale: 1 }}
-            transition={{ duration: 0.9, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            className="lg:col-span-5 flex justify-center order-1 lg:order-2"
+            initial={{ opacity: 0, scale: 0.92 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
           >
-            <motion.div 
-              className="relative"
-              style={{ y: imageY, rotate: imageRotate }}
-            >
-              {/* Glow behind image */}
+            <div className="relative">
+              {/* Soft ambient glow behind photo */}
               <div 
-                className="absolute -inset-8 rounded-3xl opacity-20 blur-3xl"
-                style={{ background: 'linear-gradient(135deg, var(--color-accent-1), var(--color-accent-3))' }}
+                className="absolute -inset-4 sm:-inset-6 rounded-3xl opacity-30 blur-2xl pointer-events-none"
+                style={{ background: 'linear-gradient(135deg, #4f46e5, #f472b6)' }}
               />
               
-              {/* Photo container */}
-              <div className="relative w-72 h-72 sm:w-80 sm:h-80 lg:w-96 lg:h-96 rounded-3xl overflow-hidden glow-border">
+              {/* Photo Card Container */}
+              <div className="relative w-64 h-64 sm:w-80 sm:h-80 lg:w-[420px] lg:h-[420px] rounded-3xl sm:rounded-[2.2rem] overflow-hidden glass shadow-2xl border border-white/90">
                 <img 
                   src="/profile.jpg"
                   alt={`${PROFILE.name} - ${PROFILE.title}`}
                   className="w-full h-full object-cover"
                   onError={(e) => {
-                    // Fallback if image not found
                     const target = e.target as HTMLImageElement;
                     target.style.display = 'none';
                     target.parentElement!.innerHTML = `
-                      <div class="w-full h-full bg-linear-to-br from-accent-1/20 to-accent-3/20 flex items-center justify-center">
-                        <span class="text-7xl font-display font-bold text-gradient">BW</span>
+                      <div class="w-full h-full bg-linear-to-br from-indigo-500/20 to-rose-500/20 flex items-center justify-center">
+                        <span class="text-6xl font-bold text-gradient">BW</span>
                       </div>
                     `;
                   }}
                 />
-                <div className="absolute inset-0 bg-linear-to-t from-background/40 via-transparent to-transparent" />
               </div>
-
-              {/* Floating decoration */}
-              <motion.div 
-                className="absolute -top-4 -right-4 glass rounded-2xl px-4 py-3 glow-border"
-                animate={{ y: [0, -8, 0] }}
-                transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-              >
-                <p className="text-xs text-muted-foreground">Based in</p>
-                <p className="text-sm font-semibold text-accent-1">{PROFILE.location}</p>
-              </motion.div>
-              
-              <motion.div 
-                className="absolute -bottom-4 -left-4 glass rounded-2xl px-4 py-3 glow-border"
-                animate={{ y: [0, 8, 0] }}
-                transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
-              >
-                <p className="text-xs text-muted-foreground">Crafting</p>
-                <p className="text-sm font-semibold text-accent-2">Web Experiences</p>
-              </motion.div>
-            </motion.div>
+            </div>
           </motion.div>
+
         </div>
 
-        {/* Scroll indicator */}
+        {/* Inline Scroll Indicator with clean margin */}
         <motion.div 
-          className="absolute bottom-8 left-1/2 -translate-x-1/2"
+          className="mt-12 lg:mt-16 flex flex-col items-center justify-center"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 1.2 }}
+          transition={{ delay: 1 }}
         >
           <button 
             onClick={handleScrollDown}
-            className="flex flex-col items-center gap-2 group"
+            className="flex flex-col items-center gap-1.5 group cursor-pointer"
             aria-label="Scroll down"
           >
-            <span className="text-xs text-muted-foreground/60 tracking-widest uppercase">Scroll</span>
+            <span className="text-[11px] text-slate-500 font-mono tracking-widest uppercase">Scroll</span>
             <motion.div
-              animate={{ y: [0, 6, 0] }}
+              animate={{ y: [0, 5, 0] }}
               transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
             >
-              <ArrowDown size={16} className="text-accent-1/60 group-hover:text-accent-1 transition-colors" />
+              <ArrowDown size={15} className="text-indigo-500 group-hover:text-indigo-700 transition-colors" />
             </motion.div>
           </button>
         </motion.div>
+
       </motion.div>
     </motion.section>
   );
