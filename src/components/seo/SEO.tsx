@@ -5,6 +5,7 @@ interface SEOProps {
   description?: string;
   keywords?: string[];
   canonical?: string;
+  canonicalUrl?: string;
   ogType?: 'website' | 'article';
   ogImage?: string;
   noindex?: boolean;
@@ -18,11 +19,13 @@ export function SEO({
   title = SEO_CONFIG.siteName,
   description = SEO_CONFIG.siteDescription,
   keywords = SEO_CONFIG.keywords,
-  canonical = SEO_CONFIG.siteUrl,
+  canonical,
+  canonicalUrl,
   ogType = 'website',
   ogImage = `${SEO_CONFIG.siteUrl}${SEO_CONFIG.ogImage}`,
   noindex = false,
 }: SEOProps) {
+  const resolvedCanonical = canonical || canonicalUrl || SEO_CONFIG.siteUrl;
   return (
     <>
       {/* Primary */}
@@ -31,14 +34,14 @@ export function SEO({
       <meta name="keywords" content={keywords.join(', ')} />
       <meta name="author" content={PROFILE.name} />
       <meta name="robots" content={noindex ? 'noindex, nofollow' : 'index, follow'} />
-      <link rel="canonical" href={canonical} />
+      <link rel="canonical" href={resolvedCanonical} />
 
       {/* Open Graph */}
       <meta property="og:type" content={ogType} />
       <meta property="og:site_name" content={SEO_CONFIG.siteName} />
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
-      <meta property="og:url" content={canonical} />
+      <meta property="og:url" content={resolvedCanonical} />
       <meta property="og:image" content={ogImage} />
       <meta property="og:locale" content="en_US" />
 

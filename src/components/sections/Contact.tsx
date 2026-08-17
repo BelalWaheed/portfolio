@@ -1,35 +1,61 @@
-import { useState, useRef } from 'react';
-import emailjs from '@emailjs/browser';
-import { motion, useScroll, useTransform, useInView, AnimatePresence } from 'framer-motion';
-import { Send, Mail, MapPin, Clock, Check, Loader2 } from 'lucide-react';
+import { useState } from 'react';
+import { Check, Copy, ExternalLink, Github, Linkedin, Loader2, MapPin, Send, Sparkles } from 'lucide-react';
 import { Button, Input, Textarea } from '@/components/ui';
 import { PROFILE } from '@/data/constants';
 
-interface FormData { name: string; email: string; subject: string; message: string; }
-interface FormErrors { name?: string; email?: string; message?: string; }
+interface FormData {
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+}
+
+interface FormErrors {
+  name?: string;
+  email?: string;
+  subject?: string;
+  message?: string;
+}
+
+const TOPIC_PILLS = [
+  'Full-Time Opportunity',
+  'Freelance / Contract Project',
+  'Architecture & Code Review',
+  'General Inquiry',
+];
 
 export function Contact() {
-  const [formData, setFormData] = useState<FormData>({ name: '', email: '', subject: '', message: '' });
+  const [formData, setFormData] = useState<FormData>({
+    name: '',
+    email: '',
+    subject: '',
+    message: '',
+  });
+  const [selectedTopic, setSelectedTopic] = useState<string>('');
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [submitError, setSubmitError] = useState(false);
+  const [emailCopied, setEmailCopied] = useState(false);
 
-  const sectionRef = useRef<HTMLElement>(null);
-  const isInView = useInView(sectionRef, { once: true, amount: 0.15 });
+  const handleCopyEmail = () => {
+    navigator.clipboard.writeText(PROFILE.email);
+    setEmailCopied(true);
+    setTimeout(() => setEmailCopied(false), 2000);
+  };
 
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ['start end', 'end start'],
-  });
-  const bgY = useTransform(scrollYProgress, [0, 1], [30, -30]);
+  const handleTopicClick = (topic: string) => {
+    setSelectedTopic(topic);
+    setFormData((prev) => ({ ...prev, subject: topic }));
+    if (errors.subject) setErrors((prev) => ({ ...prev, subject: undefined }));
+  };
 
   const validate = (): boolean => {
     const errs: FormErrors = {};
-    if (!formData.name.trim()) errs.name = 'Name is required';
-    if (!formData.email.trim()) errs.email = 'Email is required';
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) errs.email = 'Invalid email';
-    if (!formData.message.trim()) errs.message = 'Message is required';
+    if (!formData.name.trim()) errs.name = 'Please enter your name';
+    if (!formData.email.trim()) errs.email = 'Please enter your email';
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email))
+      errs.email = 'Please enter a valid email';
+    if (!formData.message.trim()) errs.message = 'Please enter your message';
     setErrors(errs);
     return Object.keys(errs).length === 0;
   };
@@ -38,166 +64,279 @@ export function Contact() {
     e.preventDefault();
     if (!validate()) return;
     setIsSubmitting(true);
-    setSubmitError(false);
-    try {
-      await emailjs.send(
-        import.meta.env.VITE_EMAILJS_SERVICE_ID,
-        import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
-        {
-          name: formData.name,
-          email: formData.email,
-          subject: formData.subject || 'New Portfolio Contact',
-          message: formData.message,
-          from_name: formData.name,
-          reply_to: formData.email,
-        },
-        import.meta.env.VITE_EMAILJS_PUBLIC_KEY
-      );
 
+    try {
+      // 1. Try Resend Serverless Function
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      if (res.ok) {
+        setIsSubmitted(true);
+        setFormData({ name: '', email: '', subject: '', message: '' });
+        setSelectedTopic('');
+        setTimeout(() => setIsSubmitted(false), 6000);
+        return;
+      }
+
+      // If serverless endpoint returned an error or is running in Vite dev mode without API, fallback
+      const data = (await res.json().catch(() => ({}))) as { error?: string };
+      throw new Error(data.error || 'Serverless endpoint unavailable');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Unknown error';
+      console.warn('API route fallback to mailto:', msg);
+      
+      // Direct mailto fallback
+      const mailtoUrl = `mailto:${PROFILE.email}?subject=${encodeURIComponent(
+        formData.subject || 'Portfolio Contact'
+      )}&body=${encodeURIComponent(
+        `Hi Belal,\n\nMy name is ${formData.name} (${formData.email}).\n\n${formData.message}`
+      )}`;
+      
+      window.location.href = mailtoUrl;
       setIsSubmitted(true);
       setFormData({ name: '', email: '', subject: '', message: '' });
-      setTimeout(() => setIsSubmitted(false), 5000);
-    } catch (error) {
-      console.error('EmailJS Error:', error);
-      setSubmitError(true);
-      setTimeout(() => setSubmitError(false), 5000);
+      setSelectedTopic('');
+      setTimeout(() => setIsSubmitted(false), 6000);
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-    if (errors[name as keyof FormErrors]) setErrors(prev => ({ ...prev, [name]: undefined }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (errors[name as keyof FormErrors])
+      setErrors((prev) => ({ ...prev, [name]: undefined }));
   };
 
-  const contactCards = [
-    { icon: Mail, label: 'Email', value: PROFILE.email, href: `mailto:${PROFILE.email}` },
-    { icon: MapPin, label: 'Location', value: PROFILE.location },
-    { icon: Clock, label: 'Status', value: 'Open for work' },
-  ];
-
   return (
-    <section ref={sectionRef} id="contact" className="section-padding relative overflow-hidden">
-      <motion.div 
-        className="absolute left-1/4 top-0 w-[400px] h-[400px] rounded-full opacity-20 pointer-events-none blur-3xl"
-        style={{ background: 'radial-gradient(circle, #a855f7, transparent 70%)', y: bgY }}
-      />
-
+    <section id="contact" className="section-padding relative overflow-hidden bg-zinc-950">
       <div className="container mx-auto px-6 lg:px-8 relative z-10">
-        {/* Header */}
-        <motion.div
-          className="mb-12 lg:mb-16"
-          initial={{ opacity: 0, y: 25 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-        >
-          <p className="text-indigo-600 text-xs sm:text-sm font-semibold tracking-widest uppercase mb-2 font-mono">// contact</p>
-          <h2 className="text-3xl sm:text-5xl lg:text-6xl font-bold mb-4">
-            Let's build something{' '}
-            <span className="text-gradient">together</span>
+        
+        {/* Section Header */}
+        <div className="mb-12 lg:mb-16 text-center max-w-2xl mx-auto">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-mono font-semibold uppercase tracking-widest mb-3">
+            <Sparkles size={13} />
+            <span>Initiate Collaboration</span>
+          </div>
+          <h2 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-zinc-100 tracking-tight">
+            Let's Build Something <span className="text-gradient-emerald">Extraordinary</span>
           </h2>
-          <p className="text-base sm:text-lg text-slate-600 max-w-xl leading-relaxed">
-            Have a project in mind or want to talk? Drop me a message below!
+          <p className="text-zinc-400 text-sm sm:text-base mt-3">
+            Whether you have a full-time role, a freelance project, or an engineering challenge, my inbox is always open.
           </p>
-        </motion.div>
+        </div>
 
-        <div className="grid lg:grid-cols-12 gap-8 lg:gap-12">
-          {/* Left: Contact Info + Social */}
-          <motion.div 
-            className="lg:col-span-5 space-y-4"
-            initial={{ opacity: 0, x: -20 }}
-            animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.15 }}
-          >
-            {contactCards.map((card, i) => (
-              <motion.div
-                key={card.label}
-                className="studio-card p-5 hover:border-indigo-300 transition-all"
-                initial={{ opacity: 0, y: 15 }}
-                animate={isInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.4, delay: 0.2 + i * 0.08 }}
-              >
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600 shrink-0">
-                    <card.icon size={18} />
+        <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-start max-w-6xl mx-auto">
+          
+          {/* Left Column: 1-Click Fast Actions & Direct Contacts */}
+          <div className="lg:col-span-5 space-y-5">
+            
+            {/* 1-Click Copy Email Card */}
+            <div className="studio-card p-6 border border-emerald-500/30 bg-zinc-900/90 shadow-2xl space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-mono text-emerald-400 font-semibold uppercase tracking-wider">
+                  Fastest Way to Reach Me
+                </span>
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              </div>
+              <p className="text-base font-bold text-zinc-100 font-mono select-all">
+                {PROFILE.email}
+              </p>
+              <div className="flex items-center gap-2 pt-1">
+                <button
+                  onClick={handleCopyEmail}
+                  className="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-bold text-xs transition-all shadow-md cursor-pointer"
+                >
+                  {emailCopied ? (
+                    <>
+                      <Check size={15} /> Copied to Clipboard!
+                    </>
+                  ) : (
+                    <>
+                      <Copy size={15} /> 1-Click Copy Email
+                    </>
+                  )}
+                </button>
+                <a
+                  href={`mailto:${PROFILE.email}`}
+                  className="p-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 border border-white/10 text-zinc-200 transition-colors"
+                  title="Open in Email App"
+                >
+                  <ExternalLink size={16} />
+                </a>
+              </div>
+            </div>
+
+            {/* Location & Response Time */}
+            <div className="studio-card p-5 border border-white/10 space-y-3 bg-zinc-900/60">
+              <div className="flex items-center gap-3 text-zinc-300 text-xs">
+                <MapPin size={16} className="text-emerald-400 shrink-0" />
+                <span>Cairo, Egypt (UTC+2) • Remote Worldwide</span>
+              </div>
+              <div className="flex items-center gap-3 text-zinc-400 text-xs">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 shrink-0" />
+                <span>Typical response time: Under 12 hours</span>
+              </div>
+            </div>
+
+            {/* Social Network Profiles */}
+            <div className="studio-card p-5 border border-white/10 space-y-3 bg-zinc-900/60">
+              <h4 className="text-xs font-mono text-zinc-400 uppercase">Profiles & Social</h4>
+              <div className="flex items-center gap-2">
+                <a
+                  href="https://github.com/BelalWaheed"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-xl bg-zinc-800/80 hover:bg-zinc-700 text-zinc-200 text-xs font-medium border border-white/5 transition-colors"
+                >
+                  <Github size={14} /> GitHub
+                </a>
+                <a
+                  href="https://www.linkedin.com/in/belalwhaeed"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-xl bg-zinc-800/80 hover:bg-zinc-700 text-zinc-200 text-xs font-medium border border-white/5 transition-colors"
+                >
+                  <Linkedin size={14} /> LinkedIn
+                </a>
+              </div>
+            </div>
+
+          </div>
+
+          {/* Right Column: Interactive Quick-Intent Form */}
+          <div className="lg:col-span-7">
+            <div className="studio-card p-6 sm:p-8 border border-white/10 shadow-2xl bg-zinc-900/90 space-y-6">
+              
+              {/* Topic Intent Selector */}
+              <div className="space-y-2">
+                <label className="text-xs font-mono text-zinc-400 uppercase block">
+                  1. Select Inquiry Topic (Optional)
+                </label>
+                <div className="flex flex-wrap gap-2">
+                  {TOPIC_PILLS.map((topic) => (
+                    <button
+                      key={topic}
+                      type="button"
+                      onClick={() => handleTopicClick(topic)}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
+                        selectedTopic === topic
+                          ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 font-semibold'
+                          : 'bg-zinc-800/80 text-zinc-400 hover:text-zinc-200 border border-white/5'
+                      }`}
+                    >
+                      {topic}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Form Inputs */}
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-xs font-medium text-zinc-300 block mb-1.5">
+                      Your Name
+                    </label>
+                    <Input
+                      name="name"
+                      placeholder="e.g. Alex Miller"
+                      value={formData.name}
+                      onChange={handleChange}
+                      error={errors.name}
+                      disabled={isSubmitting}
+                      className="bg-zinc-950 border-white/10 text-zinc-100 focus:border-emerald-500"
+                    />
                   </div>
                   <div>
-                    <p className="text-xs text-slate-500 font-medium">{card.label}</p>
-                    {card.href ? (
-                      <a href={card.href} className="font-bold text-sm text-slate-900 hover:text-indigo-600 transition-colors">{card.value}</a>
-                    ) : (
-                      <p className="font-bold text-sm text-slate-900">{card.value}</p>
-                    )}
+                    <label className="text-xs font-medium text-zinc-300 block mb-1.5">
+                      Email Address
+                    </label>
+                    <Input
+                      name="email"
+                      type="email"
+                      placeholder="alex@company.com"
+                      value={formData.email}
+                      onChange={handleChange}
+                      error={errors.email}
+                      disabled={isSubmitting}
+                      className="bg-zinc-950 border-white/10 text-zinc-100 focus:border-emerald-500"
+                    />
                   </div>
                 </div>
-              </motion.div>
-            ))}
 
+                <div>
+                  <label className="text-xs font-medium text-zinc-300 block mb-1.5">
+                    Subject
+                  </label>
+                  <Input
+                    name="subject"
+                    placeholder="Project Inquiry / Role Discussion"
+                    value={formData.subject}
+                    onChange={handleChange}
+                    disabled={isSubmitting}
+                    className="bg-zinc-950 border-white/10 text-zinc-100 focus:border-emerald-500"
+                  />
+                </div>
 
-          </motion.div>
+                <div>
+                  <label className="text-xs font-medium text-zinc-300 block mb-1.5">
+                    Message
+                  </label>
+                  <Textarea
+                    name="message"
+                    rows={4}
+                    placeholder="Tell me about your project scope, timeline, or engineering opportunity..."
+                    value={formData.message}
+                    onChange={handleChange}
+                    error={errors.message}
+                    disabled={isSubmitting}
+                    className="bg-zinc-950 border-white/10 text-zinc-100 focus:border-emerald-500"
+                  />
+                </div>
 
-          {/* Right: Contact Form */}
-          <motion.div 
-            className="lg:col-span-7"
-            initial={{ opacity: 0, x: 20 }}
-            animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.25 }}
-          >
-            <div className="studio-card p-6 sm:p-8">
-              <AnimatePresence mode="wait">
-                {isSubmitted ? (
-                  <motion.div
-                    key="success"
-                    className="flex flex-col items-center justify-center py-12 text-center"
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
+                {/* Submit Feedback & Button */}
+                <div className="pt-2">
+                  <Button
+                    type="submit"
+                    size="lg"
+                    disabled={isSubmitting}
+                    className="w-full flex items-center justify-center gap-2"
                   >
-                    <div className="w-14 h-14 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center mb-4">
-                      <Check size={28} />
-                    </div>
-                    <h3 className="text-xl font-bold font-display text-slate-900 mb-1">Message Sent!</h3>
-                    <p className="text-sm text-slate-600">Thank you! I'll get back to you shortly.</p>
-                  </motion.div>
-                ) : submitError ? (
-                  <motion.div
-                    key="error"
-                    className="flex flex-col items-center justify-center py-12 text-center"
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                  >
-                    <div className="w-14 h-14 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center mb-4">
-                      <Mail size={28} />
-                    </div>
-                    <h3 className="text-xl font-bold font-display text-slate-900 mb-1">Failed to send</h3>
-                    <p className="text-sm text-slate-600">Please try again or email me directly at {PROFILE.email}.</p>
-                  </motion.div>
-                ) : (
-                  <motion.form onSubmit={handleSubmit} className="space-y-4" key="form" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                    <div className="grid sm:grid-cols-2 gap-4">
-                      <div>
-                        <Input name="name" placeholder="Your name" value={formData.name} onChange={handleChange} error={errors.name} />
-                      </div>
-                      <div>
-                        <Input name="email" type="email" placeholder="Your email" value={formData.email} onChange={handleChange} error={errors.email} />
-                      </div>
-                    </div>
-                    <Input name="subject" placeholder="Subject (optional)" value={formData.subject} onChange={handleChange} />
-                    <div>
-                      <Textarea name="message" placeholder="Your message..." rows={4} value={formData.message} onChange={handleChange} error={errors.message} />
-                    </div>
-                    <Button type="submit" size="lg" className="w-full sm:w-auto min-w-[160px]" disabled={isSubmitting}>
-                      {isSubmitting ? (<><Loader2 size={18} className="animate-spin" /> Sending...</>) : (<><Send size={18} /> Send Message</>)}
-                    </Button>
-                  </motion.form>
-                )}
-              </AnimatePresence>
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 size={16} className="animate-spin" /> Sending Message...
+                      </>
+                    ) : isSubmitted ? (
+                      <>
+                        <Check size={16} /> Message Sent Successfully!
+                      </>
+                    ) : (
+                      <>
+                        <Send size={16} /> Send Message
+                      </>
+                    )}
+                  </Button>
+
+                  {isSubmitted && (
+                    <p className="text-xs text-emerald-400 text-center font-mono mt-2 animate-fade-in">
+                      Thank you! Your message has been dispatched. I will reply shortly.
+                    </p>
+                  )}
+                </div>
+              </form>
+
             </div>
-          </motion.div>
+          </div>
+
         </div>
+
       </div>
     </section>
   );

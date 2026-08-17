@@ -1,0 +1,37 @@
+{
+  "mcpServers": {
+    "neon": {
+      "url": "https://mcp.neon.tech/mcp",
+      "headers": {
+        "Authorization": "Bearer <NEON_API_KEY>"
+      }
+    },
+    "cloudflare": {
+      "url": "https://mcp.cloudflare.com/mcp"
+    },
+    "vercel": {
+      "url": "https://mcp.vercel.com"
+    },
+    "render": {
+      "command": "render-mcp-server",
+      "env": {
+        "RENDER_API_KEY": "<RENDER_API_KEY>"
+      }
+    },
+    "upstash": {
+      "command": "npx",
+      "args": ["-y", "@upstash/mcp-server"],
+      "env": {
+        "UPSTASH_EMAIL": "<UPSTASH_EMAIL>",
+        "UPSTASH_API_KEY": "<UPSTASH_API_KEY>"
+      }
+    },
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "<GITHUB_TOKEN>"
+      }
+    }
+  }
+}

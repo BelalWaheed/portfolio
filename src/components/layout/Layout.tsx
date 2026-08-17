@@ -3,17 +3,19 @@ import { Outlet } from 'react-router';
 import { Header } from './Header';
 import { Footer } from './Footer';
 
-export function Layout() {
+interface LayoutProps {
+  onOpenCommand?: () => void;
+  onOpenResume?: () => void;
+}
+
+export function Layout({ onOpenCommand, onOpenResume }: LayoutProps) {
   return (
-    <div className="min-h-screen flex flex-col overflow-x-hidden">
-      {/* Ambient Aurora Mesh Background */}
+    <div className="min-h-screen flex flex-col overflow-x-hidden bg-zinc-950 text-zinc-100">
+      {/* Ambient Dark Obsidian Mesh Background */}
       <div className="ambient-mesh-bg" />
       
-      {/* Noise Overlay */}
-      <div className="noise-overlay" />
-      
       {/* Header */}
-      <Header />
+      <Header onOpenCommand={onOpenCommand} onOpenResume={onOpenResume} />
       
       {/* Main Content */}
       <motion.main 

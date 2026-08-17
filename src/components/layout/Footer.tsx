@@ -1,59 +1,83 @@
-import { motion, useScroll, useTransform } from 'framer-motion';
-import { Link } from 'react-router';
-import { Github, Linkedin, Instagram, Mail, Heart } from 'lucide-react';
-import { SOCIAL_LINKS, PROFILE } from '@/data/constants';
+import { PROFILE, SOCIAL_LINKS } from "@/data/constants";
+import { motion } from "framer-motion";
+import { ArrowUp, Github, Instagram, Linkedin, Mail } from "lucide-react";
 
-const iconMap: Record<string, React.ComponentType<{ size?: number; className?: string }>> = {
-  github: Github, linkedin: Linkedin, instagram: Instagram, mail: Mail,
+const iconMap: Record<
+  string,
+  React.ComponentType<{ size?: number; className?: string }>
+> = {
+  github: Github,
+  linkedin: Linkedin,
+  instagram: Instagram,
+  mail: Mail,
 };
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
-  
-  const { scrollYProgress } = useScroll();
-  const footerOpacity = useTransform(scrollYProgress, [0.85, 1], [0, 1]);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   return (
-    <motion.footer 
-      className="border-t border-slate-200/60 bg-transparent relative"
-      style={{ opacity: footerOpacity }}
-    >
-      <div className="container mx-auto px-6 lg:px-8 py-10 relative z-10">
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-5">
-          {/* Logo */}
-          <Link to="/" className="group flex items-center gap-2">
-            <span className="font-display font-bold text-sm text-slate-700 group-hover:text-slate-900 transition-colors">
-              Belal<span className="text-indigo-600">.</span>
-            </span>
-          </Link>
+    <footer className="border-t border-white/5 bg-zinc-950/60 relative">
+      <div className="container mx-auto px-6 lg:px-8 py-12 relative z-10">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+          {/* Logo & Stack info */}
+          <div className="flex flex-col items-center md:items-start gap-1">
+            <div className="flex items-center gap-2">
+              <div className="w-6 h-6 rounded-md bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-mono font-bold text-xs">
+                BW
+              </div>
+              <span className="font-display font-bold text-sm text-zinc-100">
+                Belal Waheed
+              </span>
+            </div>
+            <p className="text-xs text-zinc-500 font-mono">
+              Crafted with React 19, Tailwind v4 & GSAP
+            </p>
+          </div>
 
           {/* Social Links */}
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-2">
             {SOCIAL_LINKS.map((link) => {
               const Icon = iconMap[link.icon];
               return Icon ? (
                 <motion.a
-                  key={link.name} href={link.url} target="_blank" rel="noopener noreferrer"
-                  className="p-2.5 text-slate-600 hover:text-indigo-600 transition-colors duration-300 rounded-xl hover:bg-white/60"
-                  aria-label={link.name} whileHover={{ y: -2 }} whileTap={{ scale: 0.95 }}
+                  key={link.name}
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2.5 text-zinc-400 hover:text-emerald-400 transition-colors duration-200 rounded-xl bg-zinc-900/60 border border-white/5 hover:border-emerald-500/30"
+                  aria-label={link.name}
+                  whileHover={{ y: -2 }}
+                  whileTap={{ scale: 0.95 }}
                 >
-                  <Icon size={18} />
+                  <Icon size={16} />
                 </motion.a>
               ) : null;
             })}
+
+            {/* Back to top */}
+            <motion.button
+              onClick={scrollToTop}
+              className="p-2.5 text-zinc-400 hover:text-zinc-100 transition-colors duration-200 rounded-xl bg-zinc-900/60 border border-white/5 hover:border-white/20 cursor-pointer ml-2"
+              aria-label="Back to top"
+              whileHover={{ y: -2 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <ArrowUp size={16} />
+            </motion.button>
           </div>
         </div>
 
-        <div className="mt-8 pt-6 border-t border-slate-200/50 text-center">
-          <p className="text-xs text-slate-500 font-medium flex items-center justify-center gap-1.5">
-            © {currentYear} Made with
-            <motion.span animate={{ scale: [1, 1.25, 1] }} transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }} className="inline-flex items-center justify-center">
-              <Heart size={13} className="text-rose-500 fill-rose-500" />
-            </motion.span>
-            by {PROFILE.name}
+        <div className="mt-8 pt-6 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-zinc-500">
+          <p>© {currentYear} {PROFILE.name}. All rights reserved.</p>
+          <p className="flex items-center gap-1.5">
+            Designed for 60fps performance & accessibility
           </p>
         </div>
       </div>
-    </motion.footer>
+    </footer>
   );
 }

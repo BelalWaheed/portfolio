@@ -1,113 +1,109 @@
-import { useRef } from 'react';
-import { motion, useScroll, useTransform, useInView, type Variants } from 'framer-motion';
-import { Layers, Server, Wrench, Layout } from 'lucide-react';
 import { SKILLS } from '@/data/constants';
-import { Badge } from '@/components/ui';
+import { Sparkles, Terminal } from 'lucide-react';
 
-const categoryIcons = {
-  frontend: Layout,
-  backend: Server,
-  tools: Wrench,
-  other: Layers,
-};
+interface SkillsProps {
+  onSelectTag?: (tag: string) => void;
+  activeTag?: string | null;
+}
 
-const categoryTitles = {
-  frontend: 'Frontend Development',
-  backend: 'Backend & Database',
-  tools: 'Tools & Platforms',
-  other: 'Other Skills',
-};
+export function Skills({ onSelectTag, activeTag }: SkillsProps) {
+  const categories = [
+    {
+      id: 'frontend',
+      title: 'Frontend Architecture',
+      skills: SKILLS.filter((s) => s.category === 'frontend'),
+    },
+    {
+      id: 'backend',
+      title: 'Backend & Database Systems',
+      skills: SKILLS.filter((s) => s.category === 'backend'),
+    },
+    {
+      id: 'tools',
+      title: 'DevOps, Tooling & Ecosystem',
+      skills: SKILLS.filter((s) => s.category === 'tools'),
+    },
+  ];
 
-const staggerContainer: Variants = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { staggerChildren: 0.15, delayChildren: 0.1 } },
-};
-
-const staggerItem: Variants = {
-  hidden: { opacity: 0, y: 25 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as const } },
-};
-
-export function Skills() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const isInView = useInView(sectionRef, { once: true, amount: 0.15 });
-
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ['start end', 'end start'],
-  });
-  const bgX = useTransform(scrollYProgress, [0, 1], [-40, 40]);
-
-  const categories = ['frontend', 'backend', 'tools'] as const;
+  const handleSkillClick = (skillName: string) => {
+    if (onSelectTag) {
+      onSelectTag(skillName);
+      document.querySelector('#projects')?.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   return (
-    <section ref={sectionRef} id="skills" className="section-padding relative overflow-hidden">
-      {/* Background glow */}
-      <motion.div 
-        className="absolute left-0 top-1/3 w-[450px] h-[450px] rounded-full opacity-20 pointer-events-none blur-3xl"
-        style={{
-          background: 'radial-gradient(circle, #4f46e5, transparent 70%)',
-          x: bgX,
-        }}
-      />
-
+    <section id="skills" className="section-padding relative overflow-hidden bg-zinc-950/80">
       <div className="container mx-auto px-6 lg:px-8 relative z-10">
-        {/* Header */}
-        <motion.div
-          className="mb-12 lg:mb-16"
-          initial={{ opacity: 0, y: 25 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-        >
-          <p className="text-indigo-600 text-xs sm:text-sm font-semibold tracking-widest uppercase mb-2 font-mono">// technical proficiency</p>
-          <h2 className="text-3xl sm:text-5xl lg:text-6xl font-bold mb-4">
-            Core <span className="text-gradient">Competencies</span>
+        
+        {/* Section Header */}
+        <div className="mb-12 lg:mb-16">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-mono font-semibold uppercase tracking-widest mb-3">
+            <Sparkles size={13} />
+            <span>Tech Stack & Capabilities</span>
+          </div>
+          <h2 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-zinc-100 tracking-tight">
+            Engineering <span className="text-gradient-emerald">Expertise</span>
           </h2>
-          <p className="text-base sm:text-lg text-slate-600 max-w-xl leading-relaxed">
-            Technologies and tools I work with to build high-performance applications.
+          <p className="text-zinc-400 text-sm sm:text-base mt-2 max-w-xl">
+            Technologies and tooling I use in production to build scalable, robust software systems. Click any technology to filter related projects.
           </p>
-        </motion.div>
+        </div>
 
-        {/* Skills Cards Grid */}
-        <motion.div 
-          className="grid grid-cols-1 md:grid-cols-3 gap-6"
-          variants={staggerContainer}
-          initial="hidden"
-          animate={isInView ? 'visible' : 'hidden'}
-        >
-          {categories.map((category) => {
-            const categorySkills = SKILLS.filter(s => s.category === category);
-            if (categorySkills.length === 0) return null;
-            const Icon = categoryIcons[category];
+        {/* Clean Category Bands */}
+        <div className="space-y-10 lg:space-y-12">
+          {categories.map((cat) => (
+            <div 
+              key={cat.id} 
+              className="grid md:grid-cols-12 gap-4 md:gap-8 items-start pb-10 border-b border-white/5 last:border-0"
+            >
+              
+              {/* Category Label */}
+              <div className="md:col-span-4 space-y-1">
+                <h3 className="text-xl sm:text-2xl font-bold text-zinc-100 font-display flex items-center gap-2">
+                  <Terminal size={18} className="text-emerald-400" />
+                  <span>{cat.title}</span>
+                </h3>
+                <p className="text-xs text-zinc-500 font-mono">
+                  {cat.skills.length} Production Technologies
+                </p>
+              </div>
 
-            return (
-              <motion.div
-                key={category}
-                variants={staggerItem}
-                className="studio-card studio-card-hover p-6 sm:p-8 flex flex-col h-full"
-              >
-                <div className="flex items-center gap-3.5 mb-6">
-                  <div className="w-11 h-11 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600 shrink-0">
-                    <Icon size={22} />
-                  </div>
-                  <h3 className="text-xl font-bold font-display text-slate-900">{categoryTitles[category]}</h3>
-                </div>
-                
-                <div className="flex flex-wrap gap-2 mt-auto">
-                  {categorySkills.map((skill) => (
-                    <Badge 
-                      key={skill.name} 
-                      variant="secondary" 
-                      className="px-3.5 py-1.5 text-xs sm:text-sm bg-white/90 border-slate-200/80 text-slate-700 hover:border-indigo-300 hover:bg-indigo-50/50 transition-all"
+              {/* Tech Cards Grid */}
+              <div className="md:col-span-8 flex flex-wrap gap-2.5 sm:gap-3">
+                {cat.skills.map((skill) => {
+                  const isActive = activeTag?.toLowerCase() === skill.name.toLowerCase();
+                  return (
+                    <div
+                      key={skill.name}
+                      onClick={() => handleSkillClick(skill.name)}
+                      className={`px-4 py-2.5 rounded-xl border text-sm text-zinc-200 transition-all duration-200 flex items-center gap-2.5 group cursor-pointer active:scale-95 ${
+                        isActive
+                          ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-300 shadow-lg'
+                          : 'bg-zinc-900/80 border-white/10 hover:border-emerald-500/40 hover:bg-zinc-800/90'
+                      }`}
+                      title={`Click to filter projects by ${skill.name}`}
                     >
-                      {skill.name}
-                    </Badge>
-                  ))}
-                </div>
-              </motion.div>
-            );
-          })}
-        </motion.div>
+                      <span className={`w-2 h-2 rounded-full transition-transform shrink-0 ${isActive ? 'bg-emerald-300 scale-125' : 'bg-emerald-400 group-hover:scale-125'}`} />
+                      <div className="flex flex-col">
+                        <span className={`font-semibold transition-colors leading-snug ${isActive ? 'text-emerald-300' : 'text-zinc-100 group-hover:text-emerald-400'}`}>
+                          {skill.name}
+                        </span>
+                        {skill.description && (
+                          <span className="text-[11px] text-zinc-500 font-normal leading-tight font-sans">
+                            {skill.description}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+            </div>
+          ))}
+        </div>
+
       </div>
     </section>
   );
