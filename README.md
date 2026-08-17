@@ -1,95 +1,123 @@
-# Belal Waheed — Portfolio
+# Belal Waheed — Full-Stack Software Engineer Portfolio
 
-A modern, responsive portfolio website showcasing my projects, skills, and experience as a Frontend Developer.
+A modern, high-performance, dark obsidian architectural portfolio built with **React 19**, **TypeScript**, **Tailwind CSS v4**, **GSAP**, **Framer Motion**, and **Lenis**.
 
-**[🌐 Live Demo](https://belalwaheed.vercel.app)** · **[📄 Resume](https://belalwaheed.vercel.app/resume)** · **[📧 Contact](mailto:belalwaheed000@gmail.com)**
+**[Live Portfolio](https://belalwaheed.pages.dev)** · **[Interactive Resume](https://belalwaheed.pages.dev/resume)** · **[GitHub Profile](https://github.com/BelalWaheed)** · **[LinkedIn](https://www.linkedin.com/in/belalwhaeed)**
 
 ---
 
-## ✨ Features
+## Architectural & Design Highlights
 
-- **Scroll-triggered animations** powered by Framer Motion
-- **Earthy green dark theme** with custom design system
-- **Fully responsive** — optimized for all screen sizes
-- **Accessible UI** components built with Radix UI
-- **Resume page** with downloadable PDF and print-friendly layout
-- **SEO optimized** — Open Graph, Twitter Cards, JSON-LD structured data, sitemap
-- **Blazing fast** — React 19 + Vite + React Compiler
+- **Dark Obsidian Aesthetic**: Deep obsidian canvas (`#09090b` / `#121215`), 1px precision architectural borders (`rgba(255, 255, 255, 0.08)`), and high-contrast accents in Emerald (`#10b981`), Amber (`#f59e0b`), and Cyan (`#06b6d4`).
+- **Typography**: Paired *Geist* display headers with *Geist Mono* for architectural metadata and *Inter* for body copy.
+- **Global Spotlight Command Menu (`Cmd+K` / `Ctrl+K`)**: Keyboard-driven navigation across sections, production projects, instant email copying, and CV downloads.
+- **Interactive Tech Stack Matrix**: Real-time project filtering by technology (*React*, *TypeScript*, *Node.js*, *MongoDB*, *ASP.Net MVC*) with smooth Framer Motion `layout` transitions.
+- **Deep-Dive Case Study Modal**: System architecture breakdowns, key feature checklists, engineering challenges solved, 3x Retina captures, and video demo playback.
+- **High-DPI 3x Captures & Hybrid Video**: Automated 3x high-resolution captures and 1080p demo video playback.
+- **Zero-Friction Contact Engine**: 1-click clipboard copy, topic intent pills, and serverless Resend API integration.
+- **Dual-Presentation Resume (`/resume`)**: Interactive dark digital layout, 1-click ATS plain-text export, and print-optimized `@media print` styles for clean 1-page PDF downloads.
+- **60fps Motion Pipeline**: Lenis smooth scrolling synchronized with GSAP ScrollTrigger ticker, with automatic touch-fallback on mobile devices.
 
-## 🛠 Tech Stack
+---
 
-| Category          | Technologies                             |
-| ----------------- | ---------------------------------------- |
-| **Framework**     | React 19, TypeScript                     |
-| **Styling**       | Tailwind CSS 4, class-variance-authority |
-| **Animation**     | Framer Motion                            |
-| **UI Primitives** | Radix UI (Tooltip, Slot)                 |
-| **Icons**         | Lucide React                             |
-| **Routing**       | React Router                             |
-| **Build**         | Vite, React Compiler (Babel)             |
-| **Deployment**    | Vercel                                   |
+## Tech Stack
 
-## 🚀 Getting Started
+| Category | Technologies |
+| :--- | :--- |
+| **Frontend Framework** | React 19, TypeScript |
+| **Styling & Design Tokens** | Tailwind CSS v4, CSS-first `@theme` variables |
+| **Motion & Scroll** | GSAP 3.x, ScrollTrigger, Framer Motion, Lenis |
+| **Icons** | Lucide React |
+| **Routing** | React Router v7 |
+| **Email & Backend** | Resend API, Cloudflare Pages Edge Functions, Vercel Serverless Functions |
+| **Build & Tooling** | Vite 8, Rolldown / Babel React Compiler |
+| **Deployment Targets** | Cloudflare Pages (Primary), Vercel |
+
+---
+
+## Project Structure
+
+```
+├── .agents/               # Agent rules and MCP configuration
+├── api/                   # Vercel Serverless Function (api/contact.ts)
+├── functions/             # Cloudflare Pages Edge Function (functions/api/contact.ts)
+├── public/                # Static assets, 3x retina captures, video demo, _redirects
+│   ├── projects/          # High-DPI 3x captures (Tivaq, Moviq, Loop, Obel)
+│   ├── _redirects         # Cloudflare Pages SPA rewrite rule
+│   └── robots.txt
+├── src/
+│   ├── components/
+│   │   ├── layout/        # Header (bi-directional scroll), Footer, Layout shell
+│   │   ├── sections/      # Hero (3D tilt), About (pillars), Projects (bento), Skills, Contact
+│   │   ├── seo/           # React 19 native document metadata & JSON-LD
+│   │   └── ui/            # CommandMenu (Cmd+K), ProjectModal, CustomCursor, Button, Input
+│   ├── data/              # Constants, project records, skills matrix, SEO config
+│   ├── pages/             # HomePage, ResumePage
+│   ├── types/             # Project, Skill, Experience TypeScript interfaces
+│   ├── App.tsx            # Global providers, Lenis scroll engine, routing
+│   ├── index.css          # Dark Obsidian tokens, glassmorphism utilities, print styles
+│   └── main.tsx           # React DOM root entrypoint
+├── scripts/               # Live 3x capture automation scripts
+├── vercel.json            # Vercel SPA routing configuration
+└── vite.config.ts         # Vite build configuration with manual vendor chunking
+```
+
+---
+
+## Local Development
 
 ### Prerequisites
-
-- [Node.js](https://nodejs.org/) (v18+)
+- Node.js (v18+)
 - npm
 
 ### Installation
 
 ```bash
-# Clone the repo
+# Clone repository
 git clone https://github.com/BelalWaheed/portfolio.git
 cd portfolio
 
 # Install dependencies
 npm install
 
-# Start dev server
+# Start local dev server
 npm run dev
 ```
 
-The app will be available at `http://localhost:5173`.
+The application will be accessible at `http://localhost:5173`.
 
-### Build for Production
+### Production Build & Linting
 
 ```bash
+# Type check and build bundle
 npm run build
-npm run preview   # preview the production build locally
+
+# Run ESLint validation
+npm run lint
+
+# Preview production build locally
+npm run preview
 ```
-
-## 📁 Project Structure
-
-```
-src/
-├── components/
-│   ├── layout/       # Header, Footer, Layout
-│   ├── sections/     # Hero, About, Projects, Skills, Contact
-│   ├── ui/           # Button, Card, Badge, Input, Textarea
-│   ├── SEO.tsx       # React 19 native metadata (OG, Twitter, canonical)
-│   └── JsonLd.tsx    # Structured data (Person + WebSite schema)
-├── lib/
-│   ├── constants.ts  # Projects, skills, social links, profile & SEO config
-│   ├── utils.ts      # cn() class-merge utility
-│   └── useScrollAnimation.ts
-├── pages/
-│   ├── HomePage.tsx
-│   └── ResumePage.tsx
-└── types/
-    └── index.ts      # TypeScript interfaces
-public/
-├── robots.txt
-├── sitemap.xml
-└── Belal_Waheed.pdf  # Downloadable resume
-```
-
-## 📄 License
-
-This project is open source and available under the [MIT License](LICENSE).
 
 ---
 
-<p align="center">
-  Built with ❤️ by <strong>Belal Waheed</strong>
-</p>
+## Deployment
+
+### Cloudflare Pages (Recommended)
+1. In Cloudflare Dashboard, navigate to **Compute (Workers & Pages)** → **Create** → **Pages** → **Connect to Git**.
+2. Select repository `BelalWaheed/portfolio` with production branch `main`.
+3. Set **Framework preset**: `Vite`, **Build command**: `npm run build`, **Build output directory**: `dist`.
+4. Add environment variable `RESEND_API_KEY` under **Environment Variables**.
+5. Click **Save and Deploy**.
+
+### Vercel
+1. Import repository on [vercel.com](https://vercel.com).
+2. Framework Preset: **Vite**, Build command: `npm run build`, Output directory: `dist`.
+3. Add `RESEND_API_KEY` in Project Settings → Environment Variables.
+4. Deploy.
+
+---
+
+## License
+
+This project is open-source and available under the [MIT License](LICENSE).
