@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { X, ExternalLink, Github, Layers, ShieldCheck, Cpu, ChevronLeft, ChevronRight, Check, Play, Image as ImageIcon } from 'lucide-react';
+import { Link } from 'react-router';
+import { X, ExternalLink, Github, Layers, ShieldCheck, Cpu, ChevronLeft, ChevronRight, Check, Play, Image as ImageIcon, ArrowRight } from 'lucide-react';
 import { Badge, Button } from '@/components/ui';
 import type { Project } from '@/types';
 
@@ -65,17 +66,28 @@ function ProjectModalContent({ project, onClose }: { project: Project; onClose: 
         className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-3xl bg-zinc-900 border border-white/10 shadow-2xl p-6 sm:p-8 text-zinc-100 animate-slide-up"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Close Button */}
-        <button
-          onClick={onClose}
-          className="absolute top-5 right-5 p-2 rounded-full bg-white/5 hover:bg-white/10 text-zinc-400 hover:text-zinc-100 transition-colors cursor-pointer border border-white/5"
-          aria-label="Close modal (Escape)"
-        >
-          <X size={18} />
-        </button>
+        {/* Top Controls */}
+        <div className="absolute top-5 right-5 flex items-center gap-2">
+          <Link
+            to={`/project/${project.slug}`}
+            onClick={onClose}
+            className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-semibold transition-colors"
+          >
+            <span>Full Page Case Study</span>
+            <ArrowRight size={13} />
+          </Link>
+
+          <button
+            onClick={onClose}
+            className="p-2 rounded-full bg-white/5 hover:bg-white/10 text-zinc-400 hover:text-zinc-100 transition-colors cursor-pointer border border-white/5"
+            aria-label="Close modal (Escape)"
+          >
+            <X size={18} />
+          </button>
+        </div>
 
         {/* Modal Header */}
-        <div className="space-y-2 mb-6 pr-10">
+        <div className="space-y-2 mb-6 pr-10 sm:pr-48">
           <div className="flex items-center gap-2">
             <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20 text-xs font-mono">
               Engineering Case Study
@@ -125,13 +137,17 @@ function ProjectModalContent({ project, onClose }: { project: Project; onClose: 
         <div className="relative aspect-[16/9] rounded-2xl overflow-hidden border border-white/10 shadow-xl mb-6 bg-zinc-950">
           {activeMediaTab === 'video' && project.videoUrl ? (
             <video
-              src={project.videoUrl}
+              poster={project.image}
+              preload="metadata"
               controls
               autoPlay
               muted
               playsInline
               className="w-full h-full object-contain bg-black"
-            />
+            >
+              <source src={project.videoUrl} type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
           ) : (
             <>
               <img
@@ -245,17 +261,27 @@ function ProjectModalContent({ project, onClose }: { project: Project; onClose: 
 
         {/* Action CTAs */}
         <div className="flex flex-wrap gap-3 pt-4 border-t border-white/10">
+          <Link
+            to={`/project/${project.slug}`}
+            onClick={onClose}
+            className="flex-1 inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-bold transition-all shadow-lg shadow-emerald-500/20 text-sm"
+          >
+            <span>Open Dedicated Page</span>
+            <ArrowRight size={16} />
+          </Link>
+
           {project.liveUrl && (
-            <Button asChild size="lg" className="flex-1">
+            <Button asChild size="lg" variant="outline" className="flex-1">
               <a href={project.liveUrl} target="_blank" rel="noopener noreferrer">
-                <ExternalLink size={16} /> Open Live Web App
+                <ExternalLink size={16} /> Live Web App
               </a>
             </Button>
           )}
+
           {project.githubUrl && (
-            <Button variant="outline" size="lg" asChild className="flex-1">
-              <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">
-                <Github size={16} /> View Source Code
+            <Button variant="outline" size="lg" asChild className="p-3">
+              <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" title="View Source Code">
+                <Github size={18} />
               </a>
             </Button>
           )}

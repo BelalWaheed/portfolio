@@ -8,7 +8,7 @@ import {
 } from "framer-motion";
 import { FileText, Menu, Search, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 
 interface HeaderProps {
   onOpenCommand?: () => void;
@@ -21,9 +21,14 @@ export function Header({ onOpenCommand, onOpenResume }: HeaderProps) {
   const [isVisible, setIsVisible] = useState(true);
   const lastScrollY = useRef(0);
 
+  const location = useLocation();
+  const navigate = useNavigate();
+
   const { scrollY } = useScroll();
   const headerBg = useTransform(scrollY, [0, 80], [0, 1]);
   const headerBlur = useTransform(scrollY, [0, 80], [0, 20]);
+
+  const isHomePage = location.pathname === "/";
 
   // Lock body scroll when mobile menu is open
   useEffect(() => {
@@ -74,8 +79,12 @@ export function Header({ onOpenCommand, onOpenResume }: HeaderProps) {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [onOpenCommand]);
 
-  // Section observer with threshold calculation
+  // Section observer with threshold calculation (only active on home page)
   useEffect(() => {
+    if (!isHomePage) {
+      return;
+    }
+
     const handleScroll = () => {
       const sections = ["contact", "skills", "projects", "about"];
       for (const section of sections) {
@@ -93,19 +102,40 @@ export function Header({ onOpenCommand, onOpenResume }: HeaderProps) {
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [isHomePage]);
 
   const handleNavClick = (href: string) => {
     setIsMobileMenuOpen(false);
+
     if (href === "#home" || href === "/") {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    } else if (href.startsWith("#")) {
-      const target = document.querySelector(href);
-      if (target) {
-        const yOffset = -70;
-        const y = target.getBoundingClientRect().top + window.pageYOffset + yOffset;
-        window.scrollTo({ top: y, behavior: "smooth" });
+      if (isHomePage) {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      } else {
+        navigate("/");
       }
+      return;
+    }
+
+    if (href.startsWith("#")) {
+      if (isHomePage) {
+        const target = document.querySelector(href);
+        if (target) {
+          const yOffset = -70;
+          const y = target.getBoundingClientRect().top + window.pageYOffset + yOffset;
+          window.scrollTo({ top: y, behavior: "smooth" });
+        }
+      } else {
+        navigate(`/${href}`);
+      }
+    }
+  };
+
+  const handleLogoClick = () => {
+    setIsMobileMenuOpen(false);
+    if (isHomePage) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      navigate("/");
     }
   };
 
@@ -129,7 +159,7 @@ export function Header({ onOpenCommand, onOpenResume }: HeaderProps) {
           {/* Logo & Available Indicator */}
           <div className="flex items-center gap-3 sm:gap-4">
             <button
-              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+              onClick={handleLogoClick}
               className="group cursor-pointer flex items-center gap-2 text-left"
             >
               <motion.div
@@ -158,26 +188,29 @@ export function Header({ onOpenCommand, onOpenResume }: HeaderProps) {
 
           {/* Desktop Nav Links */}
           <div className="hidden md:flex items-center gap-1 p-1 rounded-xl bg-zinc-900/80 border border-white/5 backdrop-blur-md">
-            {NAV_ITEMS.map((item) => (
-              <button
-                key={item.href}
-                onClick={() => handleNavClick(item.href)}
-                className={`relative px-3.5 py-1.5 text-xs font-medium rounded-lg transition-colors cursor-pointer ${
-                  activeSection === item.href
-                    ? "text-emerald-400 font-semibold bg-emerald-500/10"
-                    : "text-zinc-400 hover:text-zinc-100 hover:bg-white/5"
-                }`}
-              >
-                {item.label}
-                {activeSection === item.href && (
-                  <motion.div
-                    className="absolute bottom-0 left-1/2 -translate-x-1/2 w-4 h-0.5 rounded-full bg-emerald-400"
-                    layoutId="nav-indicator"
-                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                  />
-                )}
-              </button>
-            ))}
+            {NAV_ITEMS.map((item) => {
+              const isItemActive = isHomePage && activeSection === item.href;
+              return (
+                <button
+                  key={item.href}
+                  onClick={() => handleNavClick(item.href)}
+                  className={`relative px-3.5 py-1.5 text-xs font-medium rounded-lg transition-colors cursor-pointer ${
+                    isItemActive
+                      ? "text-emerald-400 font-semibold bg-emerald-500/10"
+                      : "text-zinc-400 hover:text-zinc-100 hover:bg-white/5"
+                  }`}
+                >
+                  {item.label}
+                  {isItemActive && (
+                    <motion.div
+                      className="absolute bottom-0 left-1/2 -translate-x-1/2 w-4 h-0.5 rounded-full bg-emerald-400"
+                      layoutId="nav-indicator"
+                      transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                    />
+                  )}
+                </button>
+              );
+            })}
           </div>
 
           {/* Desktop Actions (Command Search, Resume, Contact CTA) */}
@@ -279,22 +312,25 @@ export function Header({ onOpenCommand, onOpenResume }: HeaderProps) {
                 transition={{ duration: 0.2 }}
               >
                 <div className="p-4 space-y-2 rounded-2xl bg-zinc-900/98 border border-white/10 shadow-2xl backdrop-blur-xl">
-                  {NAV_ITEMS.map((item, index) => (
-                    <motion.button
-                      key={item.href}
-                      onClick={() => handleNavClick(item.href)}
-                      className={`block w-full text-left px-4 py-2.5 rounded-xl text-sm font-medium transition-colors ${
-                        activeSection === item.href
-                          ? "bg-emerald-500/15 text-emerald-400 font-semibold"
-                          : "text-zinc-300 hover:bg-white/5"
-                      }`}
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.15, delay: index * 0.03 }}
-                    >
-                      {item.label}
-                    </motion.button>
-                  ))}
+                  {NAV_ITEMS.map((item, index) => {
+                    const isItemActive = isHomePage && activeSection === item.href;
+                    return (
+                      <motion.button
+                        key={item.href}
+                        onClick={() => handleNavClick(item.href)}
+                        className={`block w-full text-left px-4 py-2.5 rounded-xl text-sm font-medium transition-colors ${
+                          isItemActive
+                            ? "bg-emerald-500/15 text-emerald-400 font-semibold"
+                            : "text-zinc-300 hover:bg-white/5"
+                        }`}
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.15, delay: index * 0.03 }}
+                      >
+                        {item.label}
+                      </motion.button>
+                    );
+                  })}
 
                   <div className="pt-3 mt-2 border-t border-white/10 space-y-2">
                     <Link

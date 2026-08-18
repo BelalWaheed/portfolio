@@ -1,6 +1,7 @@
 import { useState } from 'react';
+import { Link } from 'react-router';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ExternalLink, Github, Layers, Play, Sparkles, ArrowUpRight, Check, RotateCcw } from 'lucide-react';
+import { ExternalLink, Github, Layers, Play, Sparkles, ArrowUpRight, Check, RotateCcw, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui';
 import { PROJECTS } from '@/data/constants';
 import type { Project } from '@/types';
@@ -99,13 +100,15 @@ export function Projects({ onSelectProject, selectedTag: externalTag, onTagSelec
                 >
                   <div>
                     {/* Framed 3x Media Preview Container */}
-                    <div
-                      className="relative aspect-[16/10] overflow-hidden bg-zinc-900/90 border-b border-white/10 cursor-pointer"
-                      onClick={() => onSelectProject?.(project)}
+                    <Link
+                      to={`/project/${project.slug}`}
+                      className="block relative aspect-[16/10] overflow-hidden bg-zinc-900/90 border-b border-white/10"
                     >
                       <img
                         src={project.image}
                         alt={project.title}
+                        loading="lazy"
+                        decoding="async"
                         className="w-full h-full object-cover object-top group-hover:scale-[1.03] transition-transform duration-500"
                       />
 
@@ -130,18 +133,18 @@ export function Projects({ onSelectProject, selectedTag: externalTag, onTagSelec
                           </span>
                         )}
                       </div>
-                    </div>
+                    </Link>
 
                     {/* Project Details */}
                     <div className="p-6 sm:p-7 space-y-4">
                       <div className="space-y-1.5">
-                        <h3
-                          onClick={() => onSelectProject?.(project)}
-                          className="text-xl sm:text-2xl font-bold text-zinc-100 group-hover:text-emerald-400 transition-colors cursor-pointer flex items-center justify-between"
+                        <Link
+                          to={`/project/${project.slug}`}
+                          className="text-xl sm:text-2xl font-bold text-zinc-100 group-hover:text-emerald-400 transition-colors flex items-center justify-between"
                         >
                           <span>{project.title}</span>
                           <ArrowUpRight size={18} className="text-zinc-500 group-hover:text-emerald-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                        </h3>
+                        </Link>
                         <p className="text-zinc-400 text-xs sm:text-sm leading-relaxed">
                           {project.description}
                         </p>
@@ -175,13 +178,22 @@ export function Projects({ onSelectProject, selectedTag: externalTag, onTagSelec
 
                   {/* Card Action Footer */}
                   <div className="p-6 sm:p-7 pt-0 flex flex-wrap items-center gap-2.5 border-t border-white/5 mt-4">
+                    <Link
+                      to={`/project/${project.slug}`}
+                      className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-white/10 hover:border-emerald-500/30 text-xs font-semibold text-zinc-200 hover:text-white transition-all"
+                    >
+                      <span>Full Case Study</span>
+                      <ArrowRight size={14} className="text-emerald-400" />
+                    </Link>
+
                     <Button
                       size="sm"
-                      variant="outline"
-                      className="flex-1 text-xs"
+                      variant="ghost"
+                      className="text-xs px-3 text-zinc-400 hover:text-zinc-200"
                       onClick={() => onSelectProject?.(project)}
+                      title="Quick Preview Modal"
                     >
-                      <Layers size={13} /> Case Study & Architecture
+                      <Layers size={14} />
                     </Button>
                     
                     {project.liveUrl && (
@@ -189,10 +201,10 @@ export function Projects({ onSelectProject, selectedTag: externalTag, onTagSelec
                         href={project.liveUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="p-2 rounded-xl bg-zinc-900 border border-white/10 text-zinc-300 hover:text-emerald-400 hover:border-emerald-500/30 transition-colors"
+                        className="p-2.5 rounded-xl bg-zinc-900 border border-white/10 text-zinc-300 hover:text-emerald-400 hover:border-emerald-500/30 transition-colors"
                         title="Open Live Website"
                       >
-                        <ExternalLink size={16} />
+                        <ExternalLink size={15} />
                       </a>
                     )}
 
@@ -201,10 +213,10 @@ export function Projects({ onSelectProject, selectedTag: externalTag, onTagSelec
                         href={project.githubUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="p-2 rounded-xl bg-zinc-900 border border-white/10 text-zinc-300 hover:text-emerald-400 hover:border-emerald-500/30 transition-colors"
+                        className="p-2.5 rounded-xl bg-zinc-900 border border-white/10 text-zinc-300 hover:text-emerald-400 hover:border-emerald-500/30 transition-colors"
                         title="View GitHub Repository"
                       >
-                        <Github size={16} />
+                        <Github size={15} />
                       </a>
                     )}
                   </div>

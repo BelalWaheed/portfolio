@@ -1,14 +1,59 @@
-import { useEffect, useState } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router';
+import { useEffect, useState, lazy, Suspense } from 'react';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router';
 import Lenis from 'lenis';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Layout } from '@/components/layout';
 import { CustomCursor, CommandMenu, ProjectModal } from '@/components/ui';
-import { HomePage, ResumePage } from '@/pages';
 import type { Project } from '@/types';
 
+// Lazy-loaded route views for optimal initial bundle performance
+const HomePage = lazy(() => import('@/pages/HomePage'));
+const ProjectPage = lazy(() => import('@/pages/ProjectPage').then((m) => ({ default: m.ProjectPage })));
+const ResumePage = lazy(() => import('@/pages/ResumePage').then((m) => ({ default: m.ResumePage })));
+const NotFoundPage = lazy(() => import('@/pages/NotFoundPage').then((m) => ({ default: m.NotFoundPage })));
+
 gsap.registerPlugin(ScrollTrigger);
+
+// Helper component to scroll window and Lenis virtual scroll to top on route change
+function ScrollToTop() {
+  const { pathname, hash } = useLocation();
+
+  useEffect(() => {
+    // If arriving with a section hash, let the section scroll handler manage the offset
+    if (hash) return;
+
+    // Reset native DOM scroll
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    document.documentElement.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    document.body.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+
+    // Reset Lenis virtual scroll state immediately
+    const lenis = (window as unknown as { __lenis?: Lenis }).__lenis;
+    if (lenis) {
+      lenis.scrollTo(0, { immediate: true });
+    }
+  }, [pathname, hash]);
+
+  return null;
+}
+
+// Minimal Obsidian Loading Skeleton
+function PageLoader() {
+  return (
+    <div className="min-h-[70vh] flex flex-col items-center justify-center p-6 text-center animate-fade-in">
+      <div className="relative w-12 h-12 mb-4">
+        <div className="w-12 h-12 rounded-2xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-emerald-400 font-mono font-bold text-xs">
+          BW
+        </div>
+        <div className="absolute inset-0 rounded-2xl border-2 border-emerald-500/30 animate-ping pointer-events-none" />
+      </div>
+      <div className="text-xs font-mono text-zinc-500 uppercase tracking-widest">
+        Loading View...
+      </div>
+    </div>
+  );
+}
 
 export function App() {
   const [isCommandOpen, setIsCommandOpen] = useState(false);
@@ -25,6 +70,9 @@ export function App() {
       touchMultiplier: 0,
     });
 
+    // Expose lenis instance to window for global scroll synchronization
+    (window as unknown as { __lenis?: Lenis }).__lenis = lenis;
+
     lenis.on('scroll', ScrollTrigger.update);
 
     const tickerCallback = (time: number) => {
@@ -36,6 +84,7 @@ export function App() {
 
     return () => {
       gsap.ticker.remove(tickerCallback);
+      (window as unknown as { __lenis?: Lenis | null }).__lenis = null;
       lenis.destroy();
     };
   }, []);
@@ -54,6 +103,7 @@ export function App() {
 
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <CustomCursor />
       
       <CommandMenu
@@ -70,12 +120,16 @@ export function App() {
         onClose={() => setActiveModalProject(null)}
       />
 
-      <Routes>
-        <Route element={<Layout onOpenCommand={() => setIsCommandOpen(true)} />}>
-          <Route path="/" element={<HomePage onSelectProject={(p) => setActiveModalProject(p)} />} />
-        </Route>
-        <Route path="/resume" element={<ResumePage />} />
-      </Routes>
+      <Suspense fallback={<PageLoader />}>
+        <Routes>
+          <Route element={<Layout onOpenCommand={() => setIsCommandOpen(true)} />}>
+            <Route path="/" element={<HomePage onSelectProject={(p) => setActiveModalProject(p)} />} />
+            <Route path="/project/:slug" element={<ProjectPage />} />
+            <Route path="*" element={<NotFoundPage />} />
+          </Route>
+          <Route path="/resume" element={<ResumePage />} />
+        </Routes>
+      </Suspense>
     </BrowserRouter>
   );
 }

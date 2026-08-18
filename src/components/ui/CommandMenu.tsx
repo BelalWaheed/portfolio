@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
+import { useNavigate } from 'react-router';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Search, FileText, Download, Copy, Check, Github, Linkedin, Mail, X, Sparkles, Code2, Layers } from 'lucide-react';
+import { Search, FileText, Download, Copy, Check, Github, Linkedin, Mail, X, Sparkles, Code2, Layers, ArrowRight } from 'lucide-react';
 import { PROJECTS, PROFILE } from '@/data/constants';
 import type { Project } from '@/types';
 
@@ -16,6 +17,7 @@ export function CommandMenu({ isOpen, onClose, onSelectProject, onOpenResume }: 
   const [copied, setCopied] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (isOpen) {
@@ -41,7 +43,9 @@ export function CommandMenu({ isOpen, onClose, onSelectProject, onOpenResume }: 
 
   const scrollTo = (id: string) => {
     handleClose();
-    if (id === 'home') {
+    if (window.location.pathname !== '/') {
+      navigate(`/#${id}`);
+    } else if (id === 'home') {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
       document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
@@ -57,16 +61,29 @@ export function CommandMenu({ isOpen, onClose, onSelectProject, onOpenResume }: 
     { id: 'contact', label: 'Contact — Get in Touch', category: 'Navigation', icon: Mail, action: () => scrollTo('contact') },
   ];
 
-  const projectItems = PROJECTS.map((p) => ({
-    id: `project-${p.id}`,
-    label: `${p.title} (${p.tags.slice(0, 3).join(', ')})`,
-    category: 'Projects',
-    icon: Layers,
-    action: () => {
-      handleClose();
-      onSelectProject?.(p);
+  // Dedicated project direct page items
+  const projectItems = PROJECTS.flatMap((p) => [
+    {
+      id: `case-study-${p.slug}`,
+      label: `Case Study: ${p.title} (/project/${p.slug})`,
+      category: 'Case Studies',
+      icon: ArrowRight,
+      action: () => {
+        handleClose();
+        navigate(`/project/${p.slug}`);
+      },
     },
-  }));
+    {
+      id: `preview-${p.slug}`,
+      label: `Quick Preview: ${p.title} (${p.tags.slice(0, 2).join(', ')})`,
+      category: 'Quick Previews',
+      icon: Layers,
+      action: () => {
+        handleClose();
+        onSelectProject?.(p);
+      },
+    },
+  ]);
 
   const actionItems = [
     {
@@ -99,7 +116,7 @@ export function CommandMenu({ isOpen, onClose, onSelectProject, onOpenResume }: 
         if (onOpenResume) {
           onOpenResume();
         } else {
-          window.location.assign('/resume');
+          navigate('/resume');
         }
       },
     },

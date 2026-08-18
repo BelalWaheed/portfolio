@@ -1,7 +1,29 @@
+export interface ProjectChallenge {
+  title: string;
+  problem: string;
+  solution: string;
+}
+
+export interface ProjectMetric {
+  label: string;
+  value: string;
+  detail: string;
+}
+
+export interface ProjectArchitectureLayer {
+  layer: string;
+  tech: string;
+  details: string;
+}
+
 export interface Project {
   id: string;
+  slug: string;
   title: string;
+  subtitle?: string;
+  category: string;
   description: string;
+  longDescription?: string;
   image: string;
   images?: string[];
   tags: string[];
@@ -9,11 +31,23 @@ export interface Project {
   githubUrl?: string;
   featured?: boolean;
   videoUrl?: string;
-  architecture?: string[];
-  challenges?: string[];
-  features?: string[];
-  metrics?: string[];
   role?: string;
+  timeline?: string;
+  team?: string;
+  features?: string[];
+  architecture?: string[];
+  architectureLayers?: ProjectArchitectureLayer[];
+  challenges?: string[];
+  detailedChallenges?: ProjectChallenge[];
+  metrics?: string[];
+  detailedMetrics?: ProjectMetric[];
+  techStackMatrix?: {
+    frontend: string[];
+    backend: string[];
+    database: string[];
+    devops?: string[];
+  };
+  learnings?: string[];
 }
 
 export interface Skill {

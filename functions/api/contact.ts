@@ -4,6 +4,19 @@ interface Env {
   RESEND_FROM_EMAIL?: string;
 }
 
+const CORS_HEADERS = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+};
+
+export const onRequestOptions = async () => {
+  return new Response(null, {
+    status: 204,
+    headers: CORS_HEADERS,
+  });
+};
+
 export const onRequestPost = async (context: { request: Request; env: Env }) => {
   const { request, env } = context;
 
@@ -20,7 +33,10 @@ export const onRequestPost = async (context: { request: Request; env: Env }) => 
     if (!name || !email || !message) {
       return new Response(
         JSON.stringify({ error: 'Missing required fields (name, email, message)' }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
+        {
+          status: 400,
+          headers: { 'Content-Type': 'application/json', ...CORS_HEADERS },
+        }
       );
     }
 
@@ -29,7 +45,10 @@ export const onRequestPost = async (context: { request: Request; env: Env }) => 
       console.warn('RESEND_API_KEY is not configured in Cloudflare environment.');
       return new Response(
         JSON.stringify({ error: 'Email service is currently offline. Please use direct email.' }),
-        { status: 500, headers: { 'Content-Type': 'application/json' } }
+        {
+          status: 500,
+          headers: { 'Content-Type': 'application/json', ...CORS_HEADERS },
+        }
       );
     }
 
@@ -72,7 +91,7 @@ export const onRequestPost = async (context: { request: Request; env: Env }) => 
         JSON.stringify({ error: errorData.message || 'Failed to send email via Resend' }),
         {
           status: resendRes.status,
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', ...CORS_HEADERS },
         }
       );
     }
@@ -80,14 +99,14 @@ export const onRequestPost = async (context: { request: Request; env: Env }) => 
     const data = (await resendRes.json().catch(() => ({}))) as { id?: string };
     return new Response(JSON.stringify({ success: true, id: data.id }), {
       status: 200,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...CORS_HEADERS },
     });
   } catch (err: unknown) {
     const errorMsg = err instanceof Error ? err.message : 'Internal server error';
     console.error('Contact handler exception:', errorMsg);
     return new Response(JSON.stringify({ error: errorMsg }), {
       status: 500,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...CORS_HEADERS },
     });
   }
 };
