@@ -190,6 +190,7 @@ export function CommandMenu({ isOpen, onClose, onSelectProject, onOpenResume }: 
               <input
                 ref={inputRef}
                 type="text"
+                dir="auto"
                 value={query}
                 onChange={(e) => {
                   setQuery(e.target.value);

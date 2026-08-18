@@ -21,6 +21,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         <input
           type={type}
           id={inputId}
+          dir="auto"
           className={cn(
             'flex h-11 w-full studio-input px-4 py-2 text-sm text-text-primary transition-all duration-200',
             'disabled:cursor-not-allowed disabled:opacity-50',

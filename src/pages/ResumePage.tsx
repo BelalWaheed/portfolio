@@ -51,7 +51,7 @@ export function ResumePage() {
   const handleCopyATS = () => {
     const text = `
 BELAL WAHEED - FULL-STACK SOFTWARE ENGINEER
-Cairo, Egypt | belalwaheed000@gmail.com | +20 1111004353 | https://belalwaheed.vercel.app
+Cairo, Egypt | belalwaheed000@gmail.com | +20 1111004353 | https://belal.is-a.dev
 LinkedIn: https://www.linkedin.com/in/belalwhaeed | GitHub: https://github.com/BelalWaheed
 
 SUMMARY:

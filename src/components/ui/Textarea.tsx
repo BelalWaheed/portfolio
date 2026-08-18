@@ -20,6 +20,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
         )}
         <textarea
           id={textareaId}
+          dir="auto"
           className={cn(
             'flex min-h-[140px] w-full studio-input px-4 py-3 text-sm text-text-primary transition-all duration-200 resize-none',
             'disabled:cursor-not-allowed disabled:opacity-50',

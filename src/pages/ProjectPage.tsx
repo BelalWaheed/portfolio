@@ -14,7 +14,6 @@ import {
   ChevronLeft,
   ChevronRight,
   Maximize2,
-  X,
   Play,
   Image as ImageIcon,
   Server,
@@ -25,6 +24,8 @@ import {
 } from "lucide-react";
 import { PROJECTS } from "@/data/constants";
 import { SEO } from "@/components/seo/SEO";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { ImageLightbox } from "@/components/ui/ImageLightbox";
 import type { Project } from "@/types";
 
 export const ProjectPage: React.FC = () => {
@@ -129,6 +130,7 @@ const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({ project }) => {
         canonicalUrl={`https://belal.is-a.dev/project/${project.slug}`}
         ogImage={`https://belal.is-a.dev${project.image}`}
       />
+      <JsonLd type="project" project={project} />
       {/* 1. TOP BREADCRUMB & RETURN */}
       <div className="flex items-center justify-between gap-4 mb-8">
         <Link
@@ -294,7 +296,10 @@ const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({ project }) => {
             </div>
           ) : (
             <div className="space-y-4">
-              <div className="relative aspect-[16/10] sm:aspect-video rounded-2xl overflow-hidden bg-zinc-900 border border-zinc-800 group">
+              <div
+                className="relative aspect-[16/10] sm:aspect-video rounded-2xl overflow-hidden bg-zinc-900 border border-zinc-800 group cursor-zoom-in"
+                onClick={() => setLightboxOpen(true)}
+              >
                 <picture>
                   {project.imagesMobile && project.imagesMobile[selectedImageIndex] && (
                     <source media="(max-width: 640px)" srcSet={project.imagesMobile[selectedImageIndex]} type="image/webp" />
@@ -310,30 +315,31 @@ const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({ project }) => {
                   />
                 </picture>
 
-                {/* Lightbox Zoom Button */}
-                <button
-                  onClick={() => setLightboxOpen(true)}
-                  className="absolute top-4 right-4 p-2 rounded-xl bg-zinc-950/80 backdrop-blur border border-zinc-800 text-zinc-300 hover:text-white hover:bg-zinc-900 transition-colors opacity-0 group-hover:opacity-100 cursor-pointer"
-                  title="Expand image"
-                >
-                  <Maximize2 size={16} />
-                </button>
+                {/* Floating Expand Badge (Always clearly visible on Mobile & Desktop) */}
+                <div className="absolute top-3 sm:top-4 right-3 sm:right-4 z-10 flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-black/80 backdrop-blur-md border border-white/20 text-white text-xs font-mono shadow-xl hover:bg-black/95 transition-colors">
+                  <Maximize2 size={13} className="text-emerald-400" />
+                  <span>Tap to expand</span>
+                </div>
 
                 {/* Arrow Controls */}
                 {galleryImages.length > 1 && (
                   <>
                     <button
-                      onClick={() =>
-                        setSelectedImageIndex((prev) => (prev - 1 + galleryImages.length) % galleryImages.length)
-                      }
-                      className="absolute left-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-zinc-950/80 backdrop-blur border border-zinc-800 text-zinc-300 hover:text-white transition-colors cursor-pointer"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedImageIndex((prev) => (prev - 1 + galleryImages.length) % galleryImages.length);
+                      }}
+                      className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 p-2.5 sm:p-3 rounded-full bg-zinc-950/85 backdrop-blur-md border border-zinc-800 text-zinc-300 hover:text-white transition-colors cursor-pointer z-10 shadow-xl"
                       aria-label="Previous screenshot"
                     >
                       <ChevronLeft size={20} />
                     </button>
                     <button
-                      onClick={() => setSelectedImageIndex((prev) => (prev + 1) % galleryImages.length)}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-zinc-950/80 backdrop-blur border border-zinc-800 text-zinc-300 hover:text-white transition-colors cursor-pointer"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedImageIndex((prev) => (prev + 1) % galleryImages.length);
+                      }}
+                      className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 p-2.5 sm:p-3 rounded-full bg-zinc-950/85 backdrop-blur-md border border-zinc-800 text-zinc-300 hover:text-white transition-colors cursor-pointer z-10 shadow-xl"
                       aria-label="Next screenshot"
                     >
                       <ChevronRight size={20} />
@@ -344,16 +350,17 @@ const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({ project }) => {
 
               {/* Thumbnails */}
               {galleryImages.length > 1 && (
-                <div className="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-none">
+                <div className="flex items-center gap-2 sm:gap-3 overflow-x-auto pb-2 scrollbar-none">
                   {galleryImages.map((img, i) => (
                     <button
                       key={i}
                       onClick={() => setSelectedImageIndex(i)}
-                      className={`relative w-24 h-16 rounded-xl overflow-hidden border-2 flex-shrink-0 transition-all cursor-pointer ${
+                      className={`relative w-20 sm:w-28 aspect-[16/10] rounded-xl overflow-hidden border-2 flex-shrink-0 transition-all cursor-pointer ${
                         selectedImageIndex === i
-                          ? "border-emerald-500 ring-2 ring-emerald-500/20 opacity-100"
+                          ? "border-emerald-500 ring-2 ring-emerald-500/30 opacity-100 scale-105"
                           : "border-zinc-800 opacity-60 hover:opacity-90"
                       }`}
+                      aria-label={`Select screenshot ${i + 1}`}
                     >
                       <img src={img} alt="" loading="lazy" decoding="async" className="w-full h-full object-cover object-top" />
                     </button>
@@ -740,33 +747,16 @@ const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({ project }) => {
         </div>
       </footer>
 
-      {/* LIGHTBOX MODAL */}
-      <AnimatePresence>
-        {lightboxOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/95 backdrop-blur-md flex items-center justify-center p-4"
-            onClick={() => setLightboxOpen(false)}
-          >
-            <button
-              onClick={() => setLightboxOpen(false)}
-              className="absolute top-6 right-6 p-3 rounded-full bg-zinc-900 text-white hover:bg-zinc-800 transition-colors cursor-pointer"
-              aria-label="Close Lightbox"
-            >
-              <X size={20} />
-            </button>
-
-            <img
-              src={galleryImages[selectedImageIndex]}
-              alt=""
-              className="max-w-full max-h-[85vh] object-contain rounded-xl shadow-2xl"
-              onClick={(e) => e.stopPropagation()}
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* FULLSCREEN LIGHTBOX MODAL */}
+      <ImageLightbox
+        isOpen={lightboxOpen}
+        images={galleryImages}
+        imagesMobile={project.imagesMobile}
+        activeIndex={selectedImageIndex}
+        title={project.title}
+        onClose={() => setLightboxOpen(false)}
+        onIndexChange={setSelectedImageIndex}
+      />
     </div>
   );
 };
