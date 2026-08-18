@@ -1,13 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Primary Homepage -->
   <url>
-    <loc>https://belalwaheed.vercel.app/</loc>
+    <loc>https://belal.is-a.dev/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
+
+  <!-- Interactive & Print ATS Resume -->
   <url>
-    <loc>https://belalwaheed.vercel.app/resume</loc>
-    <changefreq>weekly</changefreq>
+    <loc>https://belal.is-a.dev/resume</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Dedicated Engineering Case Studies -->
+  <url>
+    <loc>https://belal.is-a.dev/project/tivaq</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://belal.is-a.dev/project/moviq</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://belal.is-a.dev/project/loop</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://belal.is-a.dev/project/obel</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://belal.is-a.dev/project/cema</loc>
+    <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 </urlset>

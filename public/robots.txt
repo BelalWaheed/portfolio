@@ -3,4 +3,4 @@ User-agent: *
 Allow: /
 
 # Sitemap Location
-Sitemap: https://belalwaheed.vercel.app/sitemap.xml
+Sitemap: https://belal.is-a.dev/sitemap.xml
