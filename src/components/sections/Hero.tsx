@@ -8,6 +8,7 @@ export function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
   const watermarkRef = useRef<HTMLDivElement>(null);
   const photoRef = useRef<HTMLDivElement>(null);
+  const mobilePhotoRef = useRef<HTMLDivElement>(null);
   const nameRef = useRef<HTMLDivElement>(null);
   const cardTopRightRef = useRef<HTMLDivElement>(null);
   const cardBottomRightRef = useRef<HTMLDivElement>(null);
@@ -15,44 +16,49 @@ export function Hero() {
   const scrollIndicatorRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
+    // Respect OS reduced-motion preference
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      return;
+    }
+
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
 
       tl.from(watermarkRef.current, {
         opacity: 0,
-        y: -40,
-        duration: 1.1,
+        y: -30,
+        duration: 1.0,
       })
-      .from(photoRef.current, {
-        scale: 0.9,
+      .from([photoRef.current, mobilePhotoRef.current], {
+        scale: 0.94,
         opacity: 0,
-        y: 40,
-        duration: 1.1,
+        y: 25,
+        duration: 0.9,
         ease: 'back.out(1.2)',
-      }, '-=0.8')
+      }, '-=0.7')
       .from([statementRef.current, nameRef.current], {
         opacity: 0,
-        y: 30,
-        stagger: 0.15,
-        duration: 0.9,
-      }, '-=0.8')
+        y: 20,
+        stagger: 0.12,
+        duration: 0.8,
+      }, '-=0.7')
       .from([cardTopRightRef.current, cardBottomRightRef.current], {
         opacity: 0,
-        scale: 0.85,
-        x: 30,
-        stagger: 0.15,
-        duration: 0.8,
-      }, '-=0.6')
+        scale: 0.9,
+        x: 20,
+        stagger: 0.12,
+        duration: 0.7,
+      }, '-=0.5')
       .from(scrollIndicatorRef.current, {
         opacity: 0,
-        y: 15,
-        duration: 0.6,
-      }, '-=0.3');
+        y: 10,
+        duration: 0.5,
+      }, '-=0.2');
 
-      // Continuous subtle ambient float on cards
+      // Subtle ambient float on desktop cards
       if (cardTopRightRef.current) {
         gsap.to(cardTopRightRef.current, {
-          y: -10,
+          y: -8,
           duration: 3.5,
           repeat: -1,
           yoyo: true,
@@ -62,7 +68,7 @@ export function Hero() {
 
       if (cardBottomRightRef.current) {
         gsap.to(cardBottomRightRef.current, {
-          y: 8,
+          y: 6,
           duration: 4,
           repeat: -1,
           yoyo: true,
@@ -75,7 +81,7 @@ export function Hero() {
     return () => ctx.revert();
   }, []);
 
-  // Desktop Mouse Move Depth Parallax
+  // Desktop Mouse Move Depth Parallax (Throttled / Disabled on touch)
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!containerRef.current || window.matchMedia('(pointer: coarse)').matches) return;
     const rect = containerRef.current.getBoundingClientRect();
@@ -95,8 +101,8 @@ export function Hero() {
 
     if (cardTopRightRef.current) {
       gsap.to(cardTopRightRef.current, {
-        x: x * 22,
-        y: y * 22,
+        x: x * 20,
+        y: y * 20,
         duration: 0.7,
         ease: 'power2.out',
       });
@@ -104,8 +110,8 @@ export function Hero() {
 
     if (cardBottomRightRef.current) {
       gsap.to(cardBottomRightRef.current, {
-        x: x * -18,
-        y: y * -18,
+        x: x * -16,
+        y: y * -16,
         duration: 0.7,
         ease: 'power2.out',
       });
@@ -113,7 +119,7 @@ export function Hero() {
 
     if (watermarkRef.current) {
       gsap.to(watermarkRef.current, {
-        x: x * -12,
+        x: x * -10,
         duration: 1,
         ease: 'power2.out',
       });
@@ -121,6 +127,7 @@ export function Hero() {
   };
 
   const handleMouseLeave = () => {
+    if (window.matchMedia('(pointer: coarse)').matches) return;
     [photoRef.current, cardTopRightRef.current, cardBottomRightRef.current, watermarkRef.current].forEach(
       (el) => {
         if (el) {
@@ -206,11 +213,18 @@ export function Hero() {
               onClick={() => document.querySelector('#projects')?.scrollIntoView({ behavior: 'smooth' })}
             >
               <div className="aspect-[16/10] rounded-xl overflow-hidden bg-zinc-900 border border-white/10 relative">
-                <img
-                  src={featuredProject?.image || '/projects/tivaq/1.png'}
-                  alt={featuredProject?.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
+                <picture>
+                  <source media="(max-width: 640px)" srcSet={featuredProject?.imageMobile || featuredProject?.image} type="image/webp" />
+                  <img
+                    src={featuredProject?.image || '/projects/tivaq/1.webp'}
+                    alt={featuredProject?.title || 'Featured Project'}
+                    width={240}
+                    height={150}
+                    loading="eager"
+                    decoding="async"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                </picture>
                 <div className="absolute top-2 right-2 px-2 py-0.5 rounded-md bg-black/70 backdrop-blur-md text-[10px] font-mono text-emerald-400 border border-emerald-500/30">
                   Featured
                 </div>
@@ -224,7 +238,30 @@ export function Hero() {
 
         </div>
 
-        {/* Center Portrait Photo */}
+        {/* Mobile Dedicated Portrait Avatar */}
+        <div ref={mobilePhotoRef} className="flex md:hidden items-center justify-center my-6 relative">
+          <div className="relative w-48 sm:w-56 aspect-[4/5] rounded-3xl overflow-hidden border border-white/15 shadow-2xl">
+            {/* Ambient emerald backlight glow */}
+            <div
+              className="absolute inset-0 rounded-3xl opacity-30 blur-2xl"
+              style={{ background: 'radial-gradient(circle, rgba(16, 185, 129, 0.7) 0%, rgba(6, 182, 212, 0.3) 60%, transparent 80%)' }}
+            />
+            <picture>
+              <source srcSet="/profile-m.webp" type="image/webp" />
+              <img
+                src="/profile.webp"
+                alt={PROFILE.name}
+                width={224}
+                height={280}
+                fetchPriority="high"
+                decoding="async"
+                className="relative z-10 w-full h-full object-cover object-top rounded-3xl"
+              />
+            </picture>
+          </div>
+        </div>
+
+        {/* Desktop Center Portrait Photo */}
         <div className="hidden md:flex absolute inset-0 items-end justify-center pointer-events-none z-10">
           <div
             ref={photoRef}
@@ -236,11 +273,18 @@ export function Hero() {
               style={{ background: 'radial-gradient(circle, rgba(16, 185, 129, 0.6) 0%, rgba(6, 182, 212, 0.3) 50%, transparent 70%)' }}
             />
             {/* Portrait Image */}
-            <img
-              src="/profile.jpg"
-              alt={PROFILE.name}
-              className="w-full h-full object-cover object-top rounded-[2.5rem] border border-white/15 shadow-2xl"
-            />
+            <picture>
+              <source media="(max-width: 640px)" srcSet="/profile-m.webp" type="image/webp" />
+              <img
+                src="/profile.webp"
+                alt={PROFILE.name}
+                width={440}
+                height={580}
+                fetchPriority="high"
+                decoding="async"
+                className="w-full h-full object-cover object-top rounded-[2.5rem] border border-white/15 shadow-2xl"
+              />
+            </picture>
           </div>
         </div>
 
@@ -266,7 +310,15 @@ export function Hero() {
             >
               <div className="flex items-center gap-3">
                 <div className="w-11 h-11 rounded-xl overflow-hidden border border-emerald-500/30 shrink-0">
-                  <img src="/profile.jpg" alt={PROFILE.name} className="w-full h-full object-cover object-top" />
+                  <img
+                    src="/profile-m.webp"
+                    alt={PROFILE.name}
+                    width={44}
+                    height={44}
+                    loading="lazy"
+                    decoding="async"
+                    className="w-full h-full object-cover object-top"
+                  />
                 </div>
                 <div>
                   <p className="text-[11px] text-zinc-400 font-mono">Initiate Project</p>
@@ -295,3 +347,5 @@ export function Hero() {
     </section>
   );
 }
+
+export default Hero;

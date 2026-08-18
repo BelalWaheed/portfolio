@@ -4,7 +4,7 @@ import Lenis from 'lenis';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Layout } from '@/components/layout';
-import { CustomCursor, CommandMenu, ProjectModal } from '@/components/ui';
+import { CustomCursor } from '@/components/ui';
 import type { Project } from '@/types';
 
 // Lazy-loaded route views for optimal initial bundle performance
@@ -12,6 +12,10 @@ const HomePage = lazy(() => import('@/pages/HomePage'));
 const ProjectPage = lazy(() => import('@/pages/ProjectPage').then((m) => ({ default: m.ProjectPage })));
 const ResumePage = lazy(() => import('@/pages/ResumePage').then((m) => ({ default: m.ResumePage })));
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage').then((m) => ({ default: m.NotFoundPage })));
+
+// Lazy-loaded on-demand interactive dialogs
+const CommandMenu = lazy(() => import('@/components/ui/CommandMenu').then((m) => ({ default: m.CommandMenu })));
+const ProjectModal = lazy(() => import('@/components/ui/ProjectModal').then((m) => ({ default: m.ProjectModal })));
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -60,11 +64,11 @@ export function App() {
   const [activeModalProject, setActiveModalProject] = useState<Project | null>(null);
 
   useEffect(() => {
-    // Only initialize Lenis smooth scroll on non-touch desktop devices
-    if (!window.matchMedia('(pointer: fine)').matches) return;
+    // Only initialize Lenis smooth scroll on non-touch desktop devices with fine pointer
+    if (typeof window === 'undefined' || !window.matchMedia('(pointer: fine)').matches) return;
 
     const lenis = new Lenis({
-      duration: 1.2,
+      duration: 1.1,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
       touchMultiplier: 0,
@@ -80,7 +84,8 @@ export function App() {
     };
 
     gsap.ticker.add(tickerCallback);
-    gsap.ticker.lagSmoothing(0);
+    // lagSmoothing(500, 33) provides butter-smooth recovery from brief pauses
+    gsap.ticker.lagSmoothing(500, 33);
 
     return () => {
       gsap.ticker.remove(tickerCallback);
@@ -106,19 +111,27 @@ export function App() {
       <ScrollToTop />
       <CustomCursor />
       
-      <CommandMenu
-        isOpen={isCommandOpen}
-        onClose={() => setIsCommandOpen(false)}
-        onSelectProject={(project) => {
-          setIsCommandOpen(false);
-          setActiveModalProject(project);
-        }}
-      />
+      {isCommandOpen && (
+        <Suspense fallback={null}>
+          <CommandMenu
+            isOpen={isCommandOpen}
+            onClose={() => setIsCommandOpen(false)}
+            onSelectProject={(project) => {
+              setIsCommandOpen(false);
+              setActiveModalProject(project);
+            }}
+          />
+        </Suspense>
+      )}
 
-      <ProjectModal
-        project={activeModalProject}
-        onClose={() => setActiveModalProject(null)}
-      />
+      {activeModalProject && (
+        <Suspense fallback={null}>
+          <ProjectModal
+            project={activeModalProject}
+            onClose={() => setActiveModalProject(null)}
+          />
+        </Suspense>
+      )}
 
       <Suspense fallback={<PageLoader />}>
         <Routes>

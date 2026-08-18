@@ -116,7 +116,23 @@ export default {
       }
     }
 
-    // Serve all frontend assets and SPA routes via static asset binding
-    return env.ASSETS.fetch(request);
+    // Serve all frontend assets and SPA routes via static asset binding with edge caching
+    const response = await env.ASSETS.fetch(request);
+    
+    if (response.ok) {
+      const newHeaders = new Headers(response.headers);
+      if (url.pathname.startsWith('/assets/')) {
+        newHeaders.set('Cache-Control', 'public, max-age=31536000, immutable');
+      } else if (url.pathname.match(/\.(webp|webm|mp4|png|jpg|jpeg|svg|pdf|ico)$/i)) {
+        newHeaders.set('Cache-Control', 'public, max-age=2592000, stale-while-revalidate=86400');
+      }
+      return new Response(response.body, {
+        status: response.status,
+        statusText: response.statusText,
+        headers: newHeaders,
+      });
+    }
+
+    return response;
   },
 };

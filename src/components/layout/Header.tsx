@@ -1,11 +1,6 @@
 import { Button } from "@/components/ui";
 import { NAV_ITEMS } from "@/data/constants";
-import {
-  AnimatePresence,
-  motion,
-  useScroll,
-  useTransform,
-} from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { FileText, Menu, Search, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router";
@@ -19,15 +14,11 @@ export function Header({ onOpenCommand, onOpenResume }: HeaderProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("#home");
   const [isVisible, setIsVisible] = useState(true);
+  const [isScrolled, setIsScrolled] = useState(false);
   const lastScrollY = useRef(0);
 
   const location = useLocation();
   const navigate = useNavigate();
-
-  const { scrollY } = useScroll();
-  const headerBg = useTransform(scrollY, [0, 80], [0, 1]);
-  const headerBlur = useTransform(scrollY, [0, 80], [0, 20]);
-
   const isHomePage = location.pathname === "/";
 
   // Lock body scroll when mobile menu is open
@@ -42,23 +33,29 @@ export function Header({ onOpenCommand, onOpenResume }: HeaderProps) {
     };
   }, [isMobileMenuOpen]);
 
-  // Smart bi-directional scroll detection
+  // Throttled / passive directional scroll detection
   useEffect(() => {
-    const handleScrollState = () => {
-      const currentScrollY = window.scrollY;
-      
-      // Always show near the top
-      if (currentScrollY < 60) {
-        setIsVisible(true);
-      } else if (currentScrollY > lastScrollY.current + 8) {
-        // Scrolling down -> hide
-        if (!isMobileMenuOpen) setIsVisible(false);
-      } else if (currentScrollY < lastScrollY.current - 8) {
-        // Scrolling up -> show smoothly
-        setIsVisible(true);
-      }
+    let ticking = false;
 
-      lastScrollY.current = currentScrollY;
+    const handleScrollState = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const currentScrollY = window.scrollY;
+          setIsScrolled(currentScrollY > 20);
+
+          if (currentScrollY < 60) {
+            setIsVisible(true);
+          } else if (currentScrollY > lastScrollY.current + 8) {
+            if (!isMobileMenuOpen) setIsVisible(false);
+          } else if (currentScrollY < lastScrollY.current - 8) {
+            setIsVisible(true);
+          }
+
+          lastScrollY.current = currentScrollY;
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
 
     window.addEventListener("scroll", handleScrollState, { passive: true });
@@ -79,29 +76,41 @@ export function Header({ onOpenCommand, onOpenResume }: HeaderProps) {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [onOpenCommand]);
 
-  // Section observer with threshold calculation (only active on home page)
+  // Zero-cost IntersectionObserver for active navigation highlighting (0 forced reflows)
   useEffect(() => {
-    if (!isHomePage) {
-      return;
-    }
+    if (!isHomePage) return;
 
-    const handleScroll = () => {
-      const sections = ["contact", "skills", "projects", "about"];
-      for (const section of sections) {
-        const el = document.getElementById(section);
-        if (el) {
-          const rect = el.getBoundingClientRect();
-          if (rect.top <= 180 && rect.bottom >= 180) {
-            setActiveSection(`#${section}`);
-            return;
-          }
+    const sectionIds = ["home", "about", "projects", "skills", "contact"];
+    const observers: IntersectionObserver[] = [];
+
+    const observerCallback: IntersectionObserverCallback = (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          setActiveSection(`#${entry.target.id}`);
         }
-      }
-      setActiveSection("#home");
+      });
     };
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    const observerOptions = {
+      root: null,
+      rootMargin: "-25% 0px -60% 0px",
+      threshold: 0,
+    };
+
+    const observer = new IntersectionObserver(observerCallback, observerOptions);
+
+    sectionIds.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) {
+        observer.observe(el);
+      }
+    });
+
+    observers.push(observer);
+
+    return () => {
+      observers.forEach((obs) => obs.disconnect());
+    };
   }, [isHomePage]);
 
   const handleNavClick = (href: string) => {
@@ -140,20 +149,15 @@ export function Header({ onOpenCommand, onOpenResume }: HeaderProps) {
   };
 
   return (
-    <motion.header
-      className="fixed top-0 left-0 right-0 z-50 py-3 transition-transform duration-300 ease-out"
-      style={{ transform: isVisible ? "translateY(0)" : "translateY(-100%)" }}
+    <header
+      className={`fixed top-0 left-0 right-0 z-50 py-3 transition-all duration-300 ease-out will-change-transform ${
+        isVisible ? "translate-y-0" : "-translate-y-full"
+      } ${
+        isScrolled
+          ? "bg-zinc-950/85 backdrop-blur-md border-b border-white/10 shadow-lg shadow-black/20"
+          : "bg-transparent border-b border-transparent"
+      }`}
     >
-      <motion.div
-        className="absolute inset-0 -z-10 border-b"
-        style={{
-          opacity: headerBg,
-          backgroundColor: "rgba(9, 9, 11, 0.88)",
-          backdropFilter: useTransform(headerBlur, (v) => `blur(${v}px)`),
-          borderColor: "rgba(255, 255, 255, 0.08)",
-        }}
-      />
-
       <div className="container mx-auto px-5 lg:px-8">
         <nav className="flex items-center justify-between">
           {/* Logo & Available Indicator */}
@@ -162,13 +166,9 @@ export function Header({ onOpenCommand, onOpenResume }: HeaderProps) {
               onClick={handleLogoClick}
               className="group cursor-pointer flex items-center gap-2 text-left"
             >
-              <motion.div
-                className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-mono font-bold text-xs group-hover:border-emerald-400 transition-colors"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
+              <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-mono font-bold text-xs group-hover:border-emerald-400 transition-colors">
                 BW
-              </motion.div>
+              </div>
               <div className="flex flex-col">
                 <span className="text-zinc-100 font-display font-bold text-sm sm:text-base tracking-tight leading-tight group-hover:text-emerald-400 transition-colors">
                   Belal Waheed
@@ -259,36 +259,13 @@ export function Header({ onOpenCommand, onOpenResume }: HeaderProps) {
             >
               <Search size={16} />
             </button>
-            <motion.button
+            <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="p-2 rounded-lg bg-zinc-900 border border-white/10 text-zinc-200 cursor-pointer"
+              className="p-2 rounded-lg bg-zinc-900 border border-white/10 text-zinc-200 cursor-pointer active:scale-95 transition-transform"
               aria-label="Toggle menu"
-              whileTap={{ scale: 0.92 }}
             >
-              <AnimatePresence mode="wait">
-                {isMobileMenuOpen ? (
-                  <motion.div
-                    key="close"
-                    initial={{ rotate: -90, opacity: 0 }}
-                    animate={{ rotate: 0, opacity: 1 }}
-                    exit={{ rotate: 90, opacity: 0 }}
-                    transition={{ duration: 0.15 }}
-                  >
-                    <X size={18} />
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    key="menu"
-                    initial={{ rotate: 90, opacity: 0 }}
-                    animate={{ rotate: 0, opacity: 1 }}
-                    exit={{ rotate: -90, opacity: 0 }}
-                    transition={{ duration: 0.15 }}
-                  >
-                    <Menu size={18} />
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </motion.button>
+              {isMobileMenuOpen ? <X size={18} /> : <Menu size={18} />}
+            </button>
           </div>
         </nav>
 
@@ -355,6 +332,8 @@ export function Header({ onOpenCommand, onOpenResume }: HeaderProps) {
           )}
         </AnimatePresence>
       </div>
-    </motion.header>
+    </header>
   );
 }
+
+export default Header;

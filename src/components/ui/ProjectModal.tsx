@@ -138,23 +138,33 @@ function ProjectModalContent({ project, onClose }: { project: Project; onClose: 
           {activeMediaTab === 'video' && project.videoUrl ? (
             <video
               poster={project.image}
-              preload="metadata"
+              preload="none"
               controls
               autoPlay
               muted
               playsInline
               className="w-full h-full object-contain bg-black"
             >
+              {project.videoWebmUrl && <source src={project.videoWebmUrl} type="video/webm" />}
               <source src={project.videoUrl} type="video/mp4" />
               Your browser does not support the video tag.
             </video>
           ) : (
             <>
-              <img
-                src={images[activeImgIndex]}
-                alt={`${project.title} capture ${activeImgIndex + 1}`}
-                className="w-full h-full object-cover"
-              />
+              <picture>
+                {project.imagesMobile && project.imagesMobile[activeImgIndex] && (
+                  <source media="(max-width: 640px)" srcSet={project.imagesMobile[activeImgIndex]} type="image/webp" />
+                )}
+                <img
+                  src={images[activeImgIndex]}
+                  alt={`${project.title} capture ${activeImgIndex + 1}`}
+                  width={800}
+                  height={450}
+                  loading="lazy"
+                  decoding="async"
+                  className="w-full h-full object-cover"
+                />
+              </picture>
 
               {images.length > 1 && (
                 <>

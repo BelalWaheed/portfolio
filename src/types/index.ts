@@ -25,12 +25,15 @@ export interface Project {
   description: string;
   longDescription?: string;
   image: string;
+  imageMobile?: string;
   images?: string[];
+  imagesMobile?: string[];
   tags: string[];
   liveUrl?: string;
   githubUrl?: string;
   featured?: boolean;
   videoUrl?: string;
+  videoWebmUrl?: string;
   role?: string;
   timeline?: string;
   team?: string;

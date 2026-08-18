@@ -4,5 +4,3 @@ export { Badge } from './Badge';
 export { Input } from './Input';
 export { Textarea } from './Textarea';
 export { CustomCursor } from './CustomCursor';
-export { ProjectModal } from './ProjectModal';
-export { CommandMenu } from './CommandMenu';

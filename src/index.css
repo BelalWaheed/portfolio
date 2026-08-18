@@ -1,4 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800;900&family=Geist+Mono:wght@400;500;600&display=swap');
 @import "tailwindcss";
 
 @theme {
@@ -57,7 +56,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Ambient Dark Obsidian Mesh Background */
+/* Ambient Dark Obsidian Mesh Background with GPU Acceleration */
 @utility ambient-mesh-bg {
   position: fixed;
   inset: 0;
@@ -71,42 +70,48 @@ body {
     radial-gradient(circle at 85% 85%, rgba(16, 185, 129, 0.06) 0%, transparent 50%);
   background-attachment: fixed;
   pointer-events: none;
+  transform: translateZ(0);
+  will-change: transform;
 }
 
 /* Dark Obsidian Architectural Card Utilities */
 @utility glass {
-  background: rgba(18, 18, 22, 0.75);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: rgba(18, 18, 22, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5), 0 4px 12px rgba(0, 0, 0, 0.3);
+  transform: translateZ(0);
 }
 
 @utility glass-strong {
-  background: rgba(22, 22, 28, 0.88);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: rgba(22, 22, 28, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.12);
   box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.7);
+  transform: translateZ(0);
 }
 
 @utility studio-card {
-  background-color: rgba(18, 18, 22, 0.75);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background-color: rgba(18, 18, 22, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5), 0 4px 12px rgba(0, 0, 0, 0.3);
   transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, border-color 0.25s ease;
   position: relative;
   border-radius: 1.25rem;
   overflow: hidden;
+  transform: translateZ(0);
+  contain: paint;
 }
 
 @utility studio-card-hover {
   &:hover {
     box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.8), 0 0 25px -5px rgba(16, 185, 129, 0.15);
     border-color: rgba(16, 185, 129, 0.35);
-    transform: translateY(-3px);
+    transform: translateY(-3px) translateZ(0);
   }
 }
 
@@ -138,16 +143,17 @@ body {
   cursor: pointer;
   border-radius: 0.75rem;
   box-shadow: 0 4px 14px rgba(16, 185, 129, 0.25);
+  transform: translateZ(0);
   
   &:hover:not(:disabled) {
     background: linear-gradient(135deg, #059669, #047857);
-    transform: translateY(-1px);
+    transform: translateY(-1px) translateZ(0);
     box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
     border-color: rgba(255, 255, 255, 0.3);
   }
   
   &:active:not(:disabled) {
-    transform: scale(0.97);
+    transform: scale(0.97) translateZ(0);
   }
 }
 
@@ -160,6 +166,7 @@ body {
   transition: all 0.2s ease;
   cursor: pointer;
   border-radius: 0.75rem;
+  transform: translateZ(0);
   
   &:hover:not(:disabled) {
     background-color: rgba(36, 36, 46, 0.9);
@@ -168,7 +175,7 @@ body {
   }
   
   &:active:not(:disabled) {
-    transform: scale(0.97);
+    transform: scale(0.97) translateZ(0);
   }
 }
 

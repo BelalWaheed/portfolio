@@ -105,8 +105,11 @@ export default defineConfig({
             if (id.includes("react") || id.includes("react-dom") || id.includes("react-router")) {
               return "vendor";
             }
-            if (id.includes("framer-motion") || id.includes("gsap") || id.includes("lenis")) {
-              return "motion";
+            if (id.includes("framer-motion")) {
+              return "framer-motion";
+            }
+            if (id.includes("gsap") || id.includes("lenis")) {
+              return "gsap-lenis";
             }
             if (id.includes("lucide-react")) {
               return "icons";

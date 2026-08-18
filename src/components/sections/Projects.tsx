@@ -104,13 +104,20 @@ export function Projects({ onSelectProject, selectedTag: externalTag, onTagSelec
                       to={`/project/${project.slug}`}
                       className="block relative aspect-[16/10] overflow-hidden bg-zinc-900/90 border-b border-white/10"
                     >
-                      <img
-                        src={project.image}
-                        alt={project.title}
-                        loading="lazy"
-                        decoding="async"
-                        className="w-full h-full object-cover object-top group-hover:scale-[1.03] transition-transform duration-500"
-                      />
+                      <picture>
+                        {project.imageMobile && (
+                          <source media="(max-width: 640px)" srcSet={project.imageMobile} type="image/webp" />
+                        )}
+                        <img
+                          src={project.image}
+                          alt={project.title}
+                          width={600}
+                          height={375}
+                          loading="lazy"
+                          decoding="async"
+                          className="w-full h-full object-cover object-top group-hover:scale-[1.03] transition-transform duration-500"
+                        />
+                      </picture>
 
                       {/* Gradient scrim overlay */}
                       <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/80 via-transparent to-transparent pointer-events-none" />

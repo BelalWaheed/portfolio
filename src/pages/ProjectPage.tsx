@@ -277,30 +277,38 @@ const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({ project }) => {
               <div className="relative aspect-video rounded-2xl overflow-hidden bg-black border border-zinc-800 flex items-center justify-center">
                 <video
                   poster={project.image}
-                  preload="metadata"
+                  preload="none"
                   controls
                   playsInline
                   className="w-full h-full object-cover"
                 >
+                  {project.videoWebmUrl && <source src={project.videoWebmUrl} type="video/webm" />}
                   <source src={project.videoUrl} type="video/mp4" />
                   Your browser does not support the video tag.
                 </video>
               </div>
               <div className="flex items-center justify-between text-xs font-mono text-zinc-500 px-1">
                 <span>HD Video Walkthrough Demo</span>
-                <span>MP4 • 1080p</span>
+                <span>WebM / MP4 • 1080p</span>
               </div>
             </div>
           ) : (
             <div className="space-y-4">
               <div className="relative aspect-[16/10] sm:aspect-video rounded-2xl overflow-hidden bg-zinc-900 border border-zinc-800 group">
-                <img
-                  src={galleryImages[selectedImageIndex]}
-                  alt={`${project.title} Preview ${selectedImageIndex + 1}`}
-                  loading="lazy"
-                  decoding="async"
-                  className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.01]"
-                />
+                <picture>
+                  {project.imagesMobile && project.imagesMobile[selectedImageIndex] && (
+                    <source media="(max-width: 640px)" srcSet={project.imagesMobile[selectedImageIndex]} type="image/webp" />
+                  )}
+                  <img
+                    src={galleryImages[selectedImageIndex]}
+                    alt={`${project.title} Preview ${selectedImageIndex + 1}`}
+                    width={1200}
+                    height={750}
+                    loading="lazy"
+                    decoding="async"
+                    className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.01]"
+                  />
+                </picture>
 
                 {/* Lightbox Zoom Button */}
                 <button
