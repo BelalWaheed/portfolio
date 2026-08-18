@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Check, Copy, ExternalLink, Github, Linkedin, Loader2, MapPin, Send, Sparkles } from 'lucide-react';
+import { AlertCircle, Check, Copy, ExternalLink, Github, Linkedin, Loader2, MapPin, Send, Sparkles } from 'lucide-react';
 import { Button, Input, Textarea } from '@/components/ui';
 import { PROFILE } from '@/data/constants';
 
@@ -35,7 +35,9 @@ export function Contact() {
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const [emailCopied, setEmailCopied] = useState(false);
+  const [draftCopied, setDraftCopied] = useState(false);
 
   const handleCopyEmail = () => {
     navigator.clipboard.writeText(PROFILE.email);
@@ -43,10 +45,18 @@ export function Contact() {
     setTimeout(() => setEmailCopied(false), 2000);
   };
 
+  const handleCopyDraft = () => {
+    const draftText = `Subject: ${formData.subject || 'Portfolio Inquiry'}\nFrom: ${formData.name} (${formData.email})\n\n${formData.message}`;
+    navigator.clipboard.writeText(draftText);
+    setDraftCopied(true);
+    setTimeout(() => setDraftCopied(false), 2500);
+  };
+
   const handleTopicClick = (topic: string) => {
     setSelectedTopic(topic);
     setFormData((prev) => ({ ...prev, subject: topic }));
     if (errors.subject) setErrors((prev) => ({ ...prev, subject: undefined }));
+    if (submitError) setSubmitError(null);
   };
 
   const validate = (): boolean => {
@@ -64,42 +74,32 @@ export function Contact() {
     e.preventDefault();
     if (!validate()) return;
     setIsSubmitting(true);
+    setSubmitError(null);
 
     try {
-      // 1. Try Resend Serverless Function
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
 
-      if (res.ok) {
+      const data = (await res.json().catch(() => ({}))) as { success?: boolean; error?: string; message?: string };
+
+      if (res.ok && (data.success || !data.error)) {
         setIsSubmitted(true);
+        setSubmitError(null);
         setFormData({ name: '', email: '', subject: '', message: '' });
         setSelectedTopic('');
-        setTimeout(() => setIsSubmitted(false), 6000);
-        return;
+        setTimeout(() => setIsSubmitted(false), 7000);
+      } else {
+        const errorMsg = data.error || data.message || 'Server error while dispatching email.';
+        setSubmitError(errorMsg);
+        setIsSubmitted(false);
       }
-
-      // If serverless endpoint returned an error or is running in Vite dev mode without API, fallback
-      const data = (await res.json().catch(() => ({}))) as { error?: string };
-      throw new Error(data.error || 'Serverless endpoint unavailable');
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Unknown error';
-      console.warn('API route fallback to mailto:', msg);
-      
-      // Direct mailto fallback
-      const mailtoUrl = `mailto:${PROFILE.email}?subject=${encodeURIComponent(
-        formData.subject || 'Portfolio Contact'
-      )}&body=${encodeURIComponent(
-        `Hi Belal,\n\nMy name is ${formData.name} (${formData.email}).\n\n${formData.message}`
-      )}`;
-      
-      window.location.href = mailtoUrl;
-      setIsSubmitted(true);
-      setFormData({ name: '', email: '', subject: '', message: '' });
-      setSelectedTopic('');
-      setTimeout(() => setIsSubmitted(false), 6000);
+      const msg = err instanceof Error ? err.message : 'Network connection failed.';
+      setSubmitError(msg);
+      setIsSubmitted(false);
     } finally {
       setIsSubmitting(false);
     }
@@ -112,7 +112,14 @@ export function Contact() {
     setFormData((prev) => ({ ...prev, [name]: value }));
     if (errors[name as keyof FormErrors])
       setErrors((prev) => ({ ...prev, [name]: undefined }));
+    if (submitError) setSubmitError(null);
   };
+
+  const mailtoFallbackUrl = `mailto:${PROFILE.email}?subject=${encodeURIComponent(
+    formData.subject || 'Portfolio Inquiry'
+  )}&body=${encodeURIComponent(
+    `Hi Belal,\n\nMy name is ${formData.name || '[Your Name]'} (${formData.email || '[Your Email]'}).\n\n${formData.message || ''}`
+  )}`;
 
   return (
     <section id="contact" className="section-padding relative overflow-hidden bg-zinc-950">
@@ -151,7 +158,7 @@ export function Contact() {
               <div className="flex items-center gap-2 pt-1">
                 <button
                   onClick={handleCopyEmail}
-                  className="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-bold text-xs transition-all shadow-md cursor-pointer"
+                  className="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-bold text-xs transition-all shadow-md cursor-pointer active:scale-95"
                 >
                   {emailCopied ? (
                     <>
@@ -210,7 +217,7 @@ export function Contact() {
 
           </div>
 
-          {/* Right Column: Interactive Quick-Intent Form */}
+          {/* Right Column: Interactive Direct-Dispatch Form */}
           <div className="lg:col-span-7">
             <div className="studio-card p-6 sm:p-8 border border-white/10 shadow-2xl bg-zinc-900/90 space-y-6">
               
@@ -301,8 +308,39 @@ export function Contact() {
                   />
                 </div>
 
-                {/* Submit Feedback & Button */}
-                <div className="pt-2">
+                {/* Status Banners & Actions */}
+                <div className="space-y-3 pt-2">
+                  {/* Error Alert Box with 1-Click Fallback Action */}
+                  {submitError && (
+                    <div className="p-4 rounded-2xl bg-amber-950/30 border border-amber-500/30 text-zinc-200 text-xs space-y-2.5 animate-fade-in">
+                      <div className="flex items-center gap-2 text-amber-400 font-semibold">
+                        <AlertCircle size={15} />
+                        <span>Direct Dispatch Notice</span>
+                      </div>
+                      <p className="text-zinc-300 leading-relaxed">
+                        {submitError} Your message has been saved in the form. You can copy it or send directly to <span className="font-mono text-emerald-400">{PROFILE.email}</span>.
+                      </p>
+                      <div className="flex flex-wrap gap-2 pt-1">
+                        <button
+                          type="button"
+                          onClick={handleCopyDraft}
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-200 font-medium transition-colors border border-white/10 cursor-pointer"
+                        >
+                          {draftCopied ? <Check size={13} className="text-emerald-400" /> : <Copy size={13} />}
+                          <span>{draftCopied ? 'Message Copied!' : 'Copy Form Content'}</span>
+                        </button>
+                        <a
+                          href={mailtoFallbackUrl}
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 font-medium transition-colors border border-emerald-500/30"
+                        >
+                          <ExternalLink size={13} />
+                          <span>Open in Email App</span>
+                        </a>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Submit Button */}
                   <Button
                     type="submit"
                     size="lg"
@@ -324,10 +362,13 @@ export function Contact() {
                     )}
                   </Button>
 
+                  {/* Success Message Banner */}
                   {isSubmitted && (
-                    <p className="text-xs text-emerald-400 text-center font-mono mt-2 animate-fade-in">
-                      Thank you! Your message has been dispatched. I will reply shortly.
-                    </p>
+                    <div className="p-3.5 rounded-xl bg-emerald-950/40 border border-emerald-500/30 text-center animate-fade-in">
+                      <p className="text-xs text-emerald-400 font-mono font-medium">
+                        Thank you! Your message has been dispatched. I will reply shortly.
+                      </p>
+                    </div>
                   )}
                 </div>
               </form>
