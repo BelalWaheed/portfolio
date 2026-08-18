@@ -4,18 +4,17 @@ import { Header } from './Header';
 import { Footer } from './Footer';
 
 interface LayoutProps {
-  onOpenCommand?: () => void;
   onOpenResume?: () => void;
 }
 
-export function Layout({ onOpenCommand, onOpenResume }: LayoutProps) {
+export function Layout({ onOpenResume }: LayoutProps) {
   return (
     <div className="min-h-screen flex flex-col overflow-x-hidden bg-zinc-950 text-zinc-100">
       {/* Ambient Dark Obsidian Mesh Background */}
       <div className="ambient-mesh-bg" />
       
       {/* Header */}
-      <Header onOpenCommand={onOpenCommand} onOpenResume={onOpenResume} />
+      <Header onOpenResume={onOpenResume} />
       
       {/* Main Content */}
       <motion.main 
@@ -32,3 +31,5 @@ export function Layout({ onOpenCommand, onOpenResume }: LayoutProps) {
     </div>
   );
 }
+
+export default Layout;

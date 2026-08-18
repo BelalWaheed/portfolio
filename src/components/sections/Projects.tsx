@@ -1,20 +1,18 @@
 import { useState } from 'react';
 import { Link } from 'react-router';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ExternalLink, Github, Layers, Play, Sparkles, ArrowUpRight, Check, RotateCcw, ArrowRight } from 'lucide-react';
+import { ExternalLink, Github, Play, ArrowUpRight, Check, RotateCcw, ArrowRight, FolderGit2 } from 'lucide-react';
 import { Button } from '@/components/ui';
 import { PROJECTS } from '@/data/constants';
-import type { Project } from '@/types';
 
 interface ProjectsProps {
-  onSelectProject?: (project: Project) => void;
   selectedTag?: string | null;
   onTagSelect?: (tag: string | null) => void;
 }
 
 const FILTER_TAGS = ['All', 'React', 'TypeScript', 'Node.js', 'MongoDB', 'ASP.Net MVC'];
 
-export function Projects({ onSelectProject, selectedTag: externalTag, onTagSelect }: ProjectsProps) {
+export function Projects({ selectedTag: externalTag, onTagSelect }: ProjectsProps) {
   const [internalTag, setInternalTag] = useState<string>('All');
   const activeFilter = externalTag || internalTag;
 
@@ -39,11 +37,11 @@ export function Projects({ onSelectProject, selectedTag: externalTag, onTagSelec
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
           <div>
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-mono font-semibold uppercase tracking-widest mb-3">
-              <Sparkles size={13} />
-              <span>Production Portfolio</span>
+              <FolderGit2 size={13} />
+              <span>Featured Projects</span>
             </div>
             <h2 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-zinc-100 tracking-tight">
-              Featured <span className="text-gradient-emerald">Projects</span>
+              Production <span className="text-gradient-emerald">Work</span>
             </h2>
           </div>
 
@@ -77,7 +75,7 @@ export function Projects({ onSelectProject, selectedTag: externalTag, onTagSelec
                 className="col-span-full py-16 text-center studio-card border border-white/10 p-8 space-y-4"
               >
                 <div className="w-12 h-12 rounded-2xl bg-zinc-900 border border-white/10 flex items-center justify-center mx-auto text-zinc-400">
-                  <Layers size={22} />
+                  <FolderGit2 size={22} />
                 </div>
                 <h3 className="text-lg font-bold text-zinc-200">No projects found with filter "{activeFilter}"</h3>
                 <p className="text-xs text-zinc-400 max-w-md mx-auto">
@@ -99,7 +97,7 @@ export function Projects({ onSelectProject, selectedTag: externalTag, onTagSelec
                   className="studio-card group flex flex-col justify-between border border-white/10 hover:border-emerald-500/40 transition-all duration-300 shadow-2xl"
                 >
                   <div>
-                    {/* Framed 3x Media Preview Container */}
+                    {/* Framed Media Preview Container */}
                     <Link
                       to={`/project/${project.slug}`}
                       className="block relative aspect-[16/10] overflow-hidden bg-zinc-900/90 border-b border-white/10"
@@ -130,7 +128,7 @@ export function Projects({ onSelectProject, selectedTag: externalTag, onTagSelec
                           </span>
                         ) : (
                           <span className="px-2.5 py-1 rounded-md bg-black/75 backdrop-blur-md border border-white/10 text-[11px] font-mono text-zinc-300">
-                            3x Retina Stills
+                            Architecture Stills
                           </span>
                         )}
 
@@ -174,7 +172,7 @@ export function Projects({ onSelectProject, selectedTag: externalTag, onTagSelec
                         {project.tags.map((tag) => (
                           <span
                             key={tag}
-                            className="px-2.5 py-0.5 rounded-md bg-zinc-900 border border-white/5 text-zinc-400 font-mono text-[11px]"
+                            className="px-2.5 py-1 text-[11px] font-mono rounded-md bg-zinc-900 border border-white/5 text-zinc-400"
                           >
                             {tag}
                           </span>
@@ -189,19 +187,9 @@ export function Projects({ onSelectProject, selectedTag: externalTag, onTagSelec
                       to={`/project/${project.slug}`}
                       className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-white/10 hover:border-emerald-500/30 text-xs font-semibold text-zinc-200 hover:text-white transition-all"
                     >
-                      <span>Full Case Study</span>
+                      <span>Read Case Study</span>
                       <ArrowRight size={14} className="text-emerald-400" />
                     </Link>
-
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      className="text-xs px-3 text-zinc-400 hover:text-zinc-200"
-                      onClick={() => onSelectProject?.(project)}
-                      title="Quick Preview Modal"
-                    >
-                      <Layers size={14} />
-                    </Button>
                     
                     {project.liveUrl && (
                       <a
@@ -210,6 +198,7 @@ export function Projects({ onSelectProject, selectedTag: externalTag, onTagSelec
                         rel="noopener noreferrer"
                         className="p-2.5 rounded-xl bg-zinc-900 border border-white/10 text-zinc-300 hover:text-emerald-400 hover:border-emerald-500/30 transition-colors"
                         title="Open Live Website"
+                        aria-label={`Open ${project.title} live site`}
                       >
                         <ExternalLink size={15} />
                       </a>
@@ -222,6 +211,7 @@ export function Projects({ onSelectProject, selectedTag: externalTag, onTagSelec
                         rel="noopener noreferrer"
                         className="p-2.5 rounded-xl bg-zinc-900 border border-white/10 text-zinc-300 hover:text-emerald-400 hover:border-emerald-500/30 transition-colors"
                         title="View GitHub Repository"
+                        aria-label={`View ${project.title} source code on GitHub`}
                       >
                         <Github size={15} />
                       </a>
@@ -237,3 +227,5 @@ export function Projects({ onSelectProject, selectedTag: externalTag, onTagSelec
     </section>
   );
 }
+
+export default Projects;

@@ -9,7 +9,7 @@ import {
   Layers,
   MapPin,
   ShieldCheck,
-  Sparkles,
+  User,
   Zap,
 } from "lucide-react";
 import { useLayoutEffect, useRef } from "react";
@@ -141,11 +141,11 @@ export function About() {
         {/* Section Heading */}
         <div className="mb-12 lg:mb-16 text-center lg:text-left">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-mono font-semibold uppercase tracking-widest mb-3">
-            <Sparkles size={13} />
-            <span>Profile & Background</span>
+            <User size={13} />
+            <span>About Me</span>
           </div>
           <h2 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-zinc-100 tracking-tight">
-            Engineering & <span className="text-gradient-emerald">Pillars</span>
+            Background & <span className="text-gradient-emerald">Philosophy</span>
           </h2>
         </div>
 

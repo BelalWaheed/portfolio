@@ -1,21 +1,15 @@
-import { useEffect, useState, lazy, Suspense } from 'react';
+import { useEffect, lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router';
 import Lenis from 'lenis';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Layout } from '@/components/layout';
-import { CustomCursor } from '@/components/ui';
-import type { Project } from '@/types';
 
 // Lazy-loaded route views for optimal initial bundle performance
 const HomePage = lazy(() => import('@/pages/HomePage'));
 const ProjectPage = lazy(() => import('@/pages/ProjectPage').then((m) => ({ default: m.ProjectPage })));
 const ResumePage = lazy(() => import('@/pages/ResumePage').then((m) => ({ default: m.ResumePage })));
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage').then((m) => ({ default: m.NotFoundPage })));
-
-// Lazy-loaded on-demand interactive dialogs
-const CommandMenu = lazy(() => import('@/components/ui/CommandMenu').then((m) => ({ default: m.CommandMenu })));
-const ProjectModal = lazy(() => import('@/components/ui/ProjectModal').then((m) => ({ default: m.ProjectModal })));
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -60,9 +54,6 @@ function PageLoader() {
 }
 
 export function App() {
-  const [isCommandOpen, setIsCommandOpen] = useState(false);
-  const [activeModalProject, setActiveModalProject] = useState<Project | null>(null);
-
   useEffect(() => {
     // Only initialize Lenis smooth scroll on non-touch desktop devices with fine pointer
     if (typeof window === 'undefined' || !window.matchMedia('(pointer: fine)').matches) return;
@@ -84,7 +75,6 @@ export function App() {
     };
 
     gsap.ticker.add(tickerCallback);
-    // lagSmoothing(500, 33) provides butter-smooth recovery from brief pauses
     gsap.ticker.lagSmoothing(500, 33);
 
     return () => {
@@ -94,49 +84,14 @@ export function App() {
     };
   }, []);
 
-  // Global Cmd+K / Ctrl+K listener
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-        e.preventDefault();
-        setIsCommandOpen((prev) => !prev);
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
-
   return (
     <BrowserRouter>
       <ScrollToTop />
-      <CustomCursor />
       
-      {isCommandOpen && (
-        <Suspense fallback={null}>
-          <CommandMenu
-            isOpen={isCommandOpen}
-            onClose={() => setIsCommandOpen(false)}
-            onSelectProject={(project) => {
-              setIsCommandOpen(false);
-              setActiveModalProject(project);
-            }}
-          />
-        </Suspense>
-      )}
-
-      {activeModalProject && (
-        <Suspense fallback={null}>
-          <ProjectModal
-            project={activeModalProject}
-            onClose={() => setActiveModalProject(null)}
-          />
-        </Suspense>
-      )}
-
       <Suspense fallback={<PageLoader />}>
         <Routes>
-          <Route element={<Layout onOpenCommand={() => setIsCommandOpen(true)} />}>
-            <Route path="/" element={<HomePage onSelectProject={(p) => setActiveModalProject(p)} />} />
+          <Route element={<Layout />}>
+            <Route path="/" element={<HomePage />} />
             <Route path="/project/:slug" element={<ProjectPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Route>

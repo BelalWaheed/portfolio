@@ -32,7 +32,7 @@ export function Hero() {
       .from([photoRef.current, mobilePhotoRef.current], {
         scale: 0.94,
         opacity: 0,
-        y: 25,
+        y: 20,
         duration: 0.9,
         ease: 'back.out(1.2)',
       }, '-=0.7')
@@ -81,7 +81,7 @@ export function Hero() {
     return () => ctx.revert();
   }, []);
 
-  // Desktop Mouse Move Depth Parallax (Throttled / Disabled on touch)
+  // Desktop Mouse Move Depth Parallax (Disabled on touch)
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!containerRef.current || window.matchMedia('(pointer: coarse)').matches) return;
     const rect = containerRef.current.getBoundingClientRect();
@@ -152,7 +152,7 @@ export function Hero() {
       id="home"
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="relative w-full min-h-screen flex flex-col justify-between pt-24 pb-8 px-5 sm:px-10 lg:px-16 overflow-hidden perspective-1000 select-none bg-zinc-950"
+      className="relative w-full min-h-[auto] md:min-h-screen flex flex-col justify-between pt-24 md:pt-28 pb-10 px-5 sm:px-10 lg:px-16 overflow-hidden perspective-1000 select-none bg-zinc-950"
     >
       {/* Background Architectural Grid Lines */}
       <div className="absolute inset-0 pointer-events-none opacity-20">
@@ -175,21 +175,34 @@ export function Hero() {
         </span>
       </div>
 
-      {/* Main Content Grid */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto flex-1 flex flex-col justify-between">
+      {/* Main Container */}
+      <div className="relative z-10 w-full max-w-7xl mx-auto flex-1 flex flex-col justify-between gap-8 md:gap-0">
         
-        {/* Top Row: Technical Statement & Featured Project Badge */}
-        <div className="grid grid-cols-1 md:grid-cols-12 items-start pt-4 gap-6">
+        {/* Top Row / Hero Info */}
+        <div className="grid grid-cols-1 md:grid-cols-12 items-start gap-6">
           
-          {/* Top Left Statement */}
-          <div ref={statementRef} className="md:col-span-7 space-y-3.5 max-w-lg">
+          {/* Top Left Statement & Info */}
+          <div ref={statementRef} className="md:col-span-7 space-y-4 max-w-lg">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs font-mono text-emerald-400">
               <Code2 size={13} />
               <span>Full-Stack Software Engineer</span>
             </div>
-            <p className="text-sm sm:text-base font-normal tracking-wide text-zinc-300 leading-relaxed font-sans">
+
+            {/* Mobile Header Title */}
+            <div className="block md:hidden space-y-1">
+              <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-zinc-100 uppercase font-display">
+                Belal Waheed
+              </h1>
+              <p className="text-xs font-mono text-emerald-400">
+                Cairo, Egypt • Open for work
+              </p>
+            </div>
+
+            <p className="text-sm sm:text-base font-normal text-zinc-300 leading-relaxed font-sans">
               Crafting high-performance web applications with <span className="text-zinc-100 font-semibold">React 19</span>, <span className="text-zinc-100 font-semibold">TypeScript</span>, and scalable <span className="text-zinc-100 font-semibold">Node.js / MongoDB</span> backends.
             </p>
+
+            {/* CTA Buttons */}
             <div className="flex flex-wrap items-center gap-3 pt-1">
               <Button size="sm" onClick={() => document.querySelector('#projects')?.scrollIntoView({ behavior: 'smooth' })}>
                 Explore Projects
@@ -205,8 +218,8 @@ export function Hero() {
             </div>
           </div>
 
-          {/* Top Right Mini Featured Card */}
-          <div className="md:col-span-5 flex justify-start md:justify-end">
+          {/* Desktop Top Right Mini Featured Card */}
+          <div className="hidden md:flex md:col-span-5 justify-end">
             <div
               ref={cardTopRightRef}
               className="w-52 sm:w-60 p-3.5 rounded-2xl glass hover:border-emerald-500/40 shadow-2xl space-y-2.5 group cursor-pointer transition-all active:scale-[0.98]"
@@ -238,12 +251,12 @@ export function Hero() {
 
         </div>
 
-        {/* Mobile Dedicated Portrait Avatar */}
-        <div ref={mobilePhotoRef} className="flex md:hidden items-center justify-center my-6 relative">
-          <div className="relative w-48 sm:w-56 aspect-[4/5] rounded-3xl overflow-hidden border border-white/15 shadow-2xl">
+        {/* Mobile Dedicated Portrait Avatar - Naturally positioned with zero empty gap */}
+        <div ref={mobilePhotoRef} className="flex md:hidden items-center justify-center my-2">
+          <div className="relative w-full max-w-[280px] sm:max-w-[320px] aspect-[4/5] rounded-3xl overflow-hidden border border-white/15 shadow-2xl bg-zinc-900/60">
             {/* Ambient emerald backlight glow */}
             <div
-              className="absolute inset-0 rounded-3xl opacity-30 blur-2xl"
+              className="absolute inset-0 rounded-3xl opacity-30 blur-2xl pointer-events-none"
               style={{ background: 'radial-gradient(circle, rgba(16, 185, 129, 0.7) 0%, rgba(6, 182, 212, 0.3) 60%, transparent 80%)' }}
             />
             <picture>
@@ -251,8 +264,8 @@ export function Hero() {
               <img
                 src="/profile.webp"
                 alt={PROFILE.name}
-                width={224}
-                height={280}
+                width={320}
+                height={400}
                 fetchPriority="high"
                 decoding="async"
                 className="relative z-10 w-full h-full object-cover object-top rounded-3xl"
@@ -288,8 +301,8 @@ export function Hero() {
           </div>
         </div>
 
-        {/* Bottom Row: Name on Left & Quick Contact Widget on Right */}
-        <div className="grid grid-cols-1 md:grid-cols-12 items-end pb-2 gap-6 z-20">
+        {/* Desktop Bottom Row: Name on Left & Quick Contact Widget on Right */}
+        <div className="hidden md:grid grid-cols-1 md:grid-cols-12 items-end pb-2 gap-6 z-20">
           
           {/* Bottom Left Name */}
           <div ref={nameRef} className="md:col-span-7 space-y-1">
@@ -302,7 +315,7 @@ export function Hero() {
           </div>
 
           {/* Bottom Right Contact Card */}
-          <div className="md:col-span-5 flex justify-start md:justify-end">
+          <div className="md:col-span-5 flex justify-end">
             <div
               ref={cardBottomRightRef}
               className="w-full sm:w-80 p-3.5 rounded-2xl glass hover:border-emerald-500/40 shadow-2xl flex items-center justify-between group cursor-pointer transition-all active:scale-[0.98]"
@@ -321,7 +334,7 @@ export function Hero() {
                   />
                 </div>
                 <div>
-                  <p className="text-[11px] text-zinc-400 font-mono">Initiate Project</p>
+                  <p className="text-[11px] text-zinc-400 font-mono">Get in Touch</p>
                   <p className="text-xs font-bold text-zinc-100">{PROFILE.name}</p>
                   <p className="text-[11px] text-emerald-400 font-medium">{PROFILE.email}</p>
                 </div>
@@ -339,7 +352,7 @@ export function Hero() {
       {/* Bottom Scroll Indicator */}
       <div
         ref={scrollIndicatorRef}
-        className="w-full flex items-center justify-center pt-2 text-zinc-500 text-[11px] font-mono gap-1 pointer-events-none"
+        className="w-full flex items-center justify-center pt-4 text-zinc-500 text-[11px] font-mono gap-1 pointer-events-none"
       >
         <ArrowDown size={12} className="animate-bounce text-emerald-500/60" />
         <span>Scroll to explore projects & skills</span>

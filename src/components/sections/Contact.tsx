@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { AlertCircle, Check, Copy, ExternalLink, Github, Linkedin, Loader2, MapPin, Send, Sparkles } from 'lucide-react';
+import { AlertCircle, Check, Copy, ExternalLink, Github, Linkedin, Loader2, Mail, MapPin, Send } from 'lucide-react';
 import { Button, Input, Textarea } from '@/components/ui';
 import { PROFILE } from '@/data/constants';
 
@@ -128,11 +128,11 @@ export function Contact() {
         {/* Section Header */}
         <div className="mb-12 lg:mb-16 text-center max-w-2xl mx-auto">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-mono font-semibold uppercase tracking-widest mb-3">
-            <Sparkles size={13} />
-            <span>Initiate Collaboration</span>
+            <Mail size={13} />
+            <span>Get in Touch</span>
           </div>
           <h2 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-zinc-100 tracking-tight">
-            Let's Build Something <span className="text-gradient-emerald">Extraordinary</span>
+            Let's Build Something <span className="text-gradient-emerald">Great</span>
           </h2>
           <p className="text-zinc-400 text-sm sm:text-base mt-3">
             Whether you have a full-time role, a freelance project, or an engineering challenge, my inbox is always open.

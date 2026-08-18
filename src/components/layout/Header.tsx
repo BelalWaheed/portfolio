@@ -1,21 +1,21 @@
 import { Button } from "@/components/ui";
 import { NAV_ITEMS } from "@/data/constants";
 import { AnimatePresence, motion } from "framer-motion";
-import { FileText, Menu, Search, X } from "lucide-react";
+import { FileText, Menu, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router";
 
 interface HeaderProps {
-  onOpenCommand?: () => void;
   onOpenResume?: () => void;
 }
 
-export function Header({ onOpenCommand, onOpenResume }: HeaderProps) {
+export function Header({ onOpenResume }: HeaderProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("#home");
   const [isVisible, setIsVisible] = useState(true);
   const [isScrolled, setIsScrolled] = useState(false);
   const lastScrollY = useRef(0);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -30,6 +30,28 @@ export function Header({ onOpenCommand, onOpenResume }: HeaderProps) {
     }
     return () => {
       document.body.style.overflow = "";
+    };
+  }, [isMobileMenuOpen]);
+
+  // Click outside to close mobile menu
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent | TouchEvent) => {
+      if (
+        isMobileMenuOpen &&
+        menuRef.current &&
+        !menuRef.current.contains(event.target as Node)
+      ) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    if (isMobileMenuOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener("touchstart", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
     };
   }, [isMobileMenuOpen]);
 
@@ -66,17 +88,13 @@ export function Header({ onOpenCommand, onOpenResume }: HeaderProps) {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") setIsMobileMenuOpen(false);
-      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
-        e.preventDefault();
-        onOpenCommand?.();
-      }
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [onOpenCommand]);
+  }, []);
 
-  // Zero-cost IntersectionObserver for active navigation highlighting (0 forced reflows)
+  // Zero-cost IntersectionObserver for active navigation highlighting
   useEffect(() => {
     if (!isHomePage) return;
 
@@ -213,18 +231,8 @@ export function Header({ onOpenCommand, onOpenResume }: HeaderProps) {
             })}
           </div>
 
-          {/* Desktop Actions (Command Search, Resume, Contact CTA) */}
+          {/* Desktop Actions (Resume, Contact CTA) */}
           <div className="hidden md:flex items-center gap-2.5">
-            {/* Quick Spotlight Trigger */}
-            <button
-              onClick={onOpenCommand}
-              className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-zinc-900/80 hover:bg-zinc-800 border border-white/10 hover:border-white/20 text-zinc-400 hover:text-zinc-200 text-xs transition-all cursor-pointer"
-              title="Open Command Menu (Ctrl+K)"
-            >
-              <Search size={13} />
-              <span className="text-[11px] text-zinc-500 font-mono">⌘K</span>
-            </button>
-
             {/* Resume Button */}
             {onOpenResume ? (
               <button
@@ -253,13 +261,6 @@ export function Header({ onOpenCommand, onOpenResume }: HeaderProps) {
           {/* Mobile Right Controls */}
           <div className="flex items-center gap-2 md:hidden">
             <button
-              onClick={onOpenCommand}
-              className="p-2 rounded-lg bg-zinc-900 border border-white/10 text-zinc-300"
-              aria-label="Quick Search (Command Menu)"
-            >
-              <Search size={16} />
-            </button>
-            <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className="p-2 rounded-lg bg-zinc-900 border border-white/10 text-zinc-200 cursor-pointer active:scale-95 transition-transform"
               aria-label="Toggle menu"
@@ -269,12 +270,13 @@ export function Header({ onOpenCommand, onOpenResume }: HeaderProps) {
           </div>
         </nav>
 
-        {/* Mobile Drawer */}
+        {/* Mobile Drawer with Backdrop Click-to-Close */}
         <AnimatePresence>
           {isMobileMenuOpen && (
             <>
+              {/* Tap backdrop to close */}
               <motion.div
-                className="fixed inset-0 z-40 bg-black/75 backdrop-blur-sm md:hidden"
+                className="fixed inset-0 z-40 bg-black/80 backdrop-blur-sm md:hidden"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
@@ -282,6 +284,7 @@ export function Header({ onOpenCommand, onOpenResume }: HeaderProps) {
               />
 
               <motion.div
+                ref={menuRef}
                 className="md:hidden mt-3 relative z-50"
                 initial={{ opacity: 0, y: -10, scale: 0.98 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -295,7 +298,7 @@ export function Header({ onOpenCommand, onOpenResume }: HeaderProps) {
                       <motion.button
                         key={item.href}
                         onClick={() => handleNavClick(item.href)}
-                        className={`block w-full text-left px-4 py-2.5 rounded-xl text-sm font-medium transition-colors ${
+                        className={`block w-full text-left px-4 py-2.5 rounded-xl text-sm font-medium transition-colors cursor-pointer ${
                           isItemActive
                             ? "bg-emerald-500/15 text-emerald-400 font-semibold"
                             : "text-zinc-300 hover:bg-white/5"
@@ -313,7 +316,7 @@ export function Header({ onOpenCommand, onOpenResume }: HeaderProps) {
                     <Link
                       to="/resume"
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-white/5 text-zinc-200 text-sm font-medium border border-white/10"
+                      className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-white/5 text-zinc-200 text-sm font-medium border border-white/10 hover:bg-white/10 transition-colors"
                     >
                       <FileText size={15} className="text-emerald-400" />
                       View Interactive Resume

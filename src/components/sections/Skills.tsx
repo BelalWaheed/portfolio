@@ -1,5 +1,5 @@
 import { SKILLS } from '@/data/constants';
-import { Sparkles, Terminal } from 'lucide-react';
+import { Code2, Terminal } from 'lucide-react';
 
 interface SkillsProps {
   onSelectTag?: (tag: string) => void;
@@ -39,8 +39,8 @@ export function Skills({ onSelectTag, activeTag }: SkillsProps) {
         {/* Section Header */}
         <div className="mb-12 lg:mb-16">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-mono font-semibold uppercase tracking-widest mb-3">
-            <Sparkles size={13} />
-            <span>Tech Stack & Capabilities</span>
+            <Code2 size={13} />
+            <span>Skills & Technologies</span>
           </div>
           <h2 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-zinc-100 tracking-tight">
             Engineering <span className="text-gradient-emerald">Expertise</span>
