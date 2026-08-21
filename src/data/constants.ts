@@ -9,10 +9,10 @@ export const NAV_ITEMS: NavItem[] = [
 ];
 
 export const SOCIAL_LINKS: SocialLink[] = [
-  { name: "GitHub", url: "https://github.com/BelalWaheed", icon: "github" },
+  { name: "GitHub", url: "https://github.com/belal-waheed", icon: "github" },
   {
     name: "LinkedIn",
-    url: "https://www.linkedin.com/in/belalwhaeed",
+    url: "https://www.linkedin.com/in/belal-whaeed",
     icon: "linkedin",
   },
   {
@@ -148,7 +148,7 @@ export const PROJECTS: Project[] = [
     ],
     tags: ["React", "Node.js", "TMDB API", "Tailwind CSS", "Redux"],
     liveUrl: "https://moviqq.vercel.app",
-    githubUrl: "https://github.com/BelalWaheed/moviq",
+    githubUrl: "https://github.com/belal-waheed/moviq",
     featured: true,
     role: "Frontend & API Architect",
     timeline: "2024",
@@ -244,7 +244,7 @@ export const PROJECTS: Project[] = [
     ],
     tags: ["Next.js", "TypeScript", "React", "Tailwind CSS", "AI Analytics", "LLM Insights"],
     liveUrl: "https://loopfeedback.vercel.app/",
-    githubUrl: "https://github.com/BelalWaheed/Loop",
+    githubUrl: "https://github.com/belal-waheed/Loop",
     videoUrl: "/projects/loop/loop-demo.mp4",
     videoWebmUrl: "/projects/loop/loop-demo.webm",
     featured: true,
@@ -347,7 +347,7 @@ export const PROJECTS: Project[] = [
       "/projects/obel/3-m.webp",
     ],
     tags: ["React", "Node.js", "Express", "MongoDB", "Tailwind CSS"],
-    githubUrl: "https://github.com/BelalWaheed/Obel",
+    githubUrl: "https://github.com/belal-waheed/Obel",
     liveUrl: "https://obel.vercel.app",
     featured: true,
     role: "Full-Stack Developer",
@@ -424,7 +424,7 @@ export const PROJECTS: Project[] = [
       "Cema is an enterprise-oriented ticketing and cinema administration web platform. Built using ASP.NET Core MVC and SQL Server, it manages movie showtimes, auditorium seating layouts, customer reservations, and cashier administrative reporting with strict relational integrity.",
     image: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=800&q=80",
     tags: ["ASP.Net MVC", "SQL Server", "C#", "Entity Framework"],
-    githubUrl: "https://github.com/BelalWaheed/cema-mvc",
+    githubUrl: "https://github.com/belal-waheed/cema-mvc",
     featured: false,
     role: "Backend & Systems Engineer",
     timeline: "2024",
